@@ -4,78 +4,77 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Image } from "react-native";
+  Image,
+} from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
 export default function Landing() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={require("../../assets/images/tatodo-landing.png")}
-        style={styles.image}
-      />
-      <Text style={styles.text}>
-        Welcome to <Text style={styles.boldText}>tatodo</Text>, Your hub to
-        discover, join and share events in your local area!
-      </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Image
+          source={require("../../assets/images/tatodo-landing.png")}
+          style={styles.image}
+        />
+        <Text style={styles.text}>Welcome to <Text style={styles.boldText}>tatodo</Text>!
+        </Text>
 
-      <Link href="/screens/sign-up" asChild>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
+        <Link href="/screens/sign-up" asChild>
+          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>Sign up</Text>
+          </TouchableOpacity>
         </Link>
 
-      <Link href="/screens/sign-in" asChild>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
-      </Link>
+        <Link href="/screens/sign-in" asChild>
+          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>Sign in</Text>
+          </TouchableOpacity>
+          </Link>
+        
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Take up the full height of the screen
+    flex: 1, // Ensures the container takes up all available space
     justifyContent: "center",
-    alignItems: "center", // Horizontally center the content
-    backgroundColor: "#fff", // Optional background color
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   text: {
     fontSize: 20,
     color: "#171616",
     fontFamily: "outfit-regular",
     margin: 20,
-    textAlign: "center", // Ensure the text is centered
-    flexWrap: 'wrap', // Allow text to wrap if needed
+    textAlign: "center",
   },
   boldText: {
-    fontSize: 20,
     fontFamily: "outfit-bold",
-    margin: 20,
   },
   image: {
     margin: 20,
   },
   button: {
-    backgroundColor: "#171616", // Match the text color from your theme
-    paddingVertical: 15, // Vertical padding
-    paddingHorizontal: 30, // Horizontal padding
-    borderRadius: 18, // Rounded corners
-    alignItems: "center", // Center the text
-    justifyContent: "center", // Center the text
-    marginTop: 20, // Add space above the button
-    width: "80%", // Button width
-    elevation: 5, // Shadow for Android
-    shadowColor: "#000", // Shadow color for iOS
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
-    shadowOpacity: 0.25, // Shadow opacity for iOS
-    shadowRadius: 3.5, // Shadow blur radius for iOS
+    backgroundColor: "#171616",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 20,
+    width: "80%",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
   },
   buttonText: {
-    fontSize: 18, // Font size
-    color: "#fff", // White text color
-    fontFamily: "outfit-regular", // Match your theme's font family
+    fontSize: 18,
+    color: "#fff",
+    fontFamily: "outfit-regular",
   },
 });
