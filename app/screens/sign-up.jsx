@@ -11,17 +11,20 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Switch,
+  Alert
 } from "react-native";
 import { React, useState, useRef } from "react";
 import { useRouter, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../configs/FirebaseConfig";
 
 export default function SignUp() {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [confirmEmail, setConfirmEmail] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isEnabled, setIsEnabled] = useState(false);
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -29,6 +32,42 @@ export default function SignUp() {
   const router = useRouter();
   const handleBack = () => {
     router.back();
+  };
+
+  const onCreateAccount = () => {
+    if (!email || !password || !name || !confirmPassword || !confirmEmail) {
+      Alert.alert("Missing fields", "Please complete all required fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert(
+        "Password Mismatch",
+        "Your passwords do not match. Please try again."
+      );
+      return;
+    }
+    if (email !== confirmEmail) {
+      Alert.alert(
+        "Email Mismatch",
+        "Your emails do not match. Please try again."
+      );
+      return;
+    }
+
+    console.log(auth);
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        console.log("Account created for:", user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage, errorCode);
+      });
   };
 
   return (
@@ -59,7 +98,8 @@ export default function SignUp() {
                   placeholder="Enter your name"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  onChangeText={(value) => setName(value)}
+                  onChangeText={setName}
+                
                 />
 
                 <Text style={styles.labelText}>Email address</Text>
@@ -67,7 +107,7 @@ export default function SignUp() {
                   placeholder="Enter email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  onChangeText={(value) => setEmail(value)}
+                  onChangeText={setEmail}
                 />
 
                 <Text style={styles.labelText}>Confirm email</Text>
@@ -75,25 +115,36 @@ export default function SignUp() {
                   placeholder="Confirm email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  onChangeText={(value) => setConfirmEmail(value)}
+                  onChangeText={setConfirmEmail}
                 />
 
                 <Text style={styles.labelText}>Create password</Text>
                 <TextInput
+                  autoComplete="off"
                   placeholder="Create a password"
+                  secureTextEntry={false}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  secureTextEntry
-                  onChangeText={(value) => setPassword(value)}
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  multiline={false}
+                  autoCorrect="false"
+                  onChangeText={setPassword}
                 />
 
                 <Text style={styles.labelText}>Confirm password</Text>
                 <TextInput
+                  autoComplete="off"
                   placeholder="Confirm password"
+                  secureTextEntry={false}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  secureTextEntry
-                  onChangeText={(value) => setConfirmPassword(value)}
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  multiline={false}
+                  autoCorrect="false"
+                  onChangeText={setConfirmPassword}
+              
                 />
                 <View style={styles.toggleContainer}>
                   <Text style={styles.labelText}>
@@ -109,7 +160,11 @@ export default function SignUp() {
                   />
                 </View>
 
-                <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={0.7}
+                  onPress={onCreateAccount}
+                >
                   <Text style={styles.buttonText}>Sign up</Text>
                 </TouchableOpacity>
 
