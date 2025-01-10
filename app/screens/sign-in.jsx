@@ -51,22 +51,27 @@ export default function SignIn() {
                 <Text style={styles.labelText}>Email address</Text>
                 <TextInput
                   placeholder="Enter email address"
+                  placeholderTextColor={"grey"}
                   style={styles.inputBox}
                   onChangeText={(value) => setEmail(value)}
                 />
                 <Text style={styles.labelText}>Password</Text>
                 <TextInput
                   placeholder="Enter password"
+                  placeholderTextColor={"grey"}
                   style={styles.inputBox}
                   secureTextEntry
                   onChangeText={(value) => setPassword(value)}
                 />
                 <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-                  <Text style={styles.buttonText}>Sign In</Text>
+                  <Text style={styles.buttonText}>Sign in</Text>
                 </TouchableOpacity>
+                
                 <Link href="/screens/sign-up" asChild>
                   <TouchableOpacity style={styles.linkButton}>
-                    <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+                    <Text style={styles.linkText}>
+                      Don't have an account? Sign up
+                    </Text>
                   </TouchableOpacity>
                 </Link>
               </View>

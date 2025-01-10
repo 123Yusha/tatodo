@@ -17,21 +17,29 @@ export default function Landing() {
           source={require("../../assets/images/tatodo-landing.png")}
           style={styles.image}
         />
-        <Text style={styles.text}>Welcome to <Text style={styles.boldText}>tatodo</Text>!
-        </Text>
 
-        <Link href="/screens/sign-up" asChild>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Sign up</Text>
-          </TouchableOpacity>
-        </Link>
+        {/* Text container */}
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Welcome to <Text style={styles.boldText}>tatodo</Text>!
+          </Text>
+          <Text style={styles.text}>Sign in or Sign up to use the app.</Text>
+        </View>
 
-        <Link href="/screens/sign-in" asChild>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Sign in</Text>
-          </TouchableOpacity>
+        {/* Button container */}
+        <View style={styles.buttonContainer}>
+          <Link href="/screens/sign-up" asChild>
+            <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+              <Text style={styles.buttonText}>Sign up</Text>
+            </TouchableOpacity>
           </Link>
-        
+
+          <Link href="/screens/sign-in" asChild>
+            <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+              <Text style={styles.buttonText}>Sign in</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -39,23 +47,30 @@ export default function Landing() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensures the container takes up all available space
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+  textContainer: {
+    marginBottom: 40, // Provides spacing between text and buttons
   },
   text: {
     fontSize: 20,
     color: "#171616",
     fontFamily: "outfit-regular",
-    margin: 20,
     textAlign: "center",
+    margin: 10
   },
   boldText: {
     fontFamily: "outfit-bold",
   },
   image: {
-    margin: 20,
+    marginBottom: 20, // Space between the image and the text
+  },
+  buttonContainer: {
+    alignItems: "center",
+    width: "100%", // Ensures the buttons take full width
   },
   button: {
     backgroundColor: "#171616",
@@ -64,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    margin: 20,
+    marginBottom: 20, // Adds spacing between buttons
     width: "80%",
     elevation: 5,
     shadowColor: "#000",
