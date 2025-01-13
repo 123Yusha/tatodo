@@ -1,11 +1,19 @@
-import { Text, View, Stylesheet, SafeAreaView, StyleSheet } from "react-native";
+import {  SafeAreaView, StyleSheet } from "react-native";
 import Landing from "./screens/Landing";
-import { Link } from "expo-router";
+import { Redirect } from "expo-router";
+import {auth} from "../configs/FirebaseConfig"
 
 export default function Index() {
+  
+  const user = auth.currentUser
   return (
     <SafeAreaView style={styles.container}>
+      {/* {user ? 
+      <Redirect href={'/home'}/> :
       <Landing/>
+      } */}
+      <Landing/>
+      
     </SafeAreaView>
   );
 }

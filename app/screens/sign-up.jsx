@@ -62,6 +62,10 @@ export default function SignUp() {
         // Signed up
         const user = userCredential.user;
         console.log("Account created for:", user);
+        Alert.alert(
+          "Registration complete!",
+          "Welcome to tatodo"
+        );
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -120,29 +124,21 @@ export default function SignUp() {
 
                 <Text style={styles.labelText}>Create password</Text>
                 <TextInput
-                  autoComplete="off"
-                  placeholder="Create a password"
-                  secureTextEntry={false}
+                  
+                  placeholder="Confirm password"
+                  secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoCapitalize="none"
-                  keyboardType="default"
-                  multiline={false}
-                  autoCorrect="false"
                   onChangeText={setPassword}
                 />
 
                 <Text style={styles.labelText}>Confirm password</Text>
                 <TextInput
-                  autoComplete="off"
+                 
                   placeholder="Confirm password"
-                  secureTextEntry={false}
+                  secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoCapitalize="none"
-                  keyboardType="default"
-                  multiline={false}
-                  autoCorrect="false"
                   onChangeText={setConfirmPassword}
               
                 />

@@ -10,11 +10,14 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert
 } from "react-native";
 import { React, useState } from "react";
 import { Link } from "expo-router";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from "../../configs/FirebaseConfig";
 
 export default function SignIn() {
   const [email, setEmail] = useState();
@@ -25,6 +28,43 @@ export default function SignIn() {
     // Use the router to navigate back to the previous screen
     router.back();
   };
+
+  const onSignIn=() => {
+    if (!email || !password) {
+      Alert.alert("Missing fields", "Please complete all required fields", [
+        {
+          text: "Ok",
+          onPress: () => console.log("Ok Pressed"),
+          style: "cancel",
+        },
+      ]);
+      return;
+    }
+    const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log("Signed in as:", user)
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode, errorMessage)
+    if (errorCode === "auth/invalid-credential") {
+      Alert.alert("Whoops!", "Invalid login credentials", [
+        {
+          text: "Ok",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+      ]);
+    }
+  });
+  }
+
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -60,10 +100,10 @@ export default function SignIn() {
                   placeholder="Enter password"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  secureTextEntry
+                  secureTextEntry={true}
                   onChangeText={(value) => setPassword(value)}
                 />
-                <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+                <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onSignIn}>
                   <Text style={styles.buttonText}>Sign in</Text>
                 </TouchableOpacity>
                 
