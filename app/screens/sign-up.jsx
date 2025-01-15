@@ -11,7 +11,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Switch,
-  Alert
+  Alert,
+  StatusBar,
 } from "react-native";
 import { React, useState, useRef } from "react";
 import { useRouter, Link } from "expo-router";
@@ -75,7 +76,8 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

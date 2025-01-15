@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  StatusBar
 } from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
@@ -19,7 +20,8 @@ export default function ManageEvents() {
   };
   
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.container}

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from "react-native";
 import React from "react";
 import { signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
@@ -14,7 +14,8 @@ export default function MyAccount() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Text style={styles.buttonText}>Log out</Text>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20, // Adds spacing between buttons
-    width: "80%",
+    width: "100%",
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

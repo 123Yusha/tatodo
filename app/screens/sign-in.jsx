@@ -10,7 +10,8 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
+  StatusBar
 } from "react-native";
 import { React, useState } from "react";
 import { Link } from "expo-router";
@@ -67,7 +68,8 @@ signInWithEmailAndPassword(auth, email, password)
   
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -78,6 +80,7 @@ signInWithEmailAndPassword(auth, email, password)
         >
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
+              <View style={styles.backArrowContainer}>
               <TouchableOpacity onPress={handleBack}>
                 <Ionicons
                   name="arrow-back"
@@ -86,6 +89,7 @@ signInWithEmailAndPassword(auth, email, password)
                   style={styles.backArrow}
                 />
               </TouchableOpacity>
+              </View>
               <View style={styles.inputContainer}>
                 <Text style={styles.headerText}>Sign in to your account</Text>
                 <Text style={styles.labelText}>Email address</Text>
@@ -130,11 +134,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
   },
+  backArrowContainer: {
+    position: "absolute",
+    top: 40, // Align with header
+    left: 20, // Ensure space from screen edge
+    zIndex: 1, // Ensure the button is above other elements
+    paddingHorizontal: 10, // Add some padding around the arrow for better touch area
+  },
   backArrow: {
-    margin: 20,
-    position: "absolute", // Keeps it fixed in place
-    top: 10,
-    left: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   inputContainer: {
     flex: 1, // Takes the remaining space

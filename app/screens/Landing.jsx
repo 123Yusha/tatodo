@@ -5,13 +5,15 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  StatusBar
 } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
 export default function Landing() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.container}>
         <Image
           source={require("../../assets/images/tatodo-landing.png")}

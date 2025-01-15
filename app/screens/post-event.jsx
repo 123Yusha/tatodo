@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Alert,
+  StatusBar,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -29,7 +31,7 @@ export default function PostEvent() {
 
   const onChangeDate = (e, selectedDate) => {
     if (selectedDate) {
-      setEventDate(selectedDate); // Update date state
+      setEventDate(selectedDate); // Update date state\
     }
     setShowDatePicker(false); // Close the date picker after selecting a date
   };
@@ -39,32 +41,30 @@ export default function PostEvent() {
   }, []);
 
   const getCategoryList = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "Category"));
-      if (querySnapshot.empty) {
-        console.log("No documents found.");
-      } else {
-        querySnapshot.forEach((doc) => {
-          console.log("Docs:", doc.data());
-          setCategoryList((categoryList) => [...categoryList, doc.data]);
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching documents: ", error);
+    setCategoryList([]);
+    const querySnapshot = await getDocs(collection(db, "Category"));
+    if (querySnapshot.empty) {
+      console.log("No documents found.");
+    } else {
+      querySnapshot.forEach((doc) => {
+        console.log("Docs:", doc.data());
+        setCategoryList((categoryList) => [...categoryList, doc.data()]);
+      });
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor:"#fff" }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor:"#fff" }}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
         style={styles.container}
       >
         <View style={styles.container}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backArrow}>
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
-         
+
           <Formik
             initialValues={{
               name: "",
@@ -73,11 +73,42 @@ export default function PostEvent() {
               location: "",
               category: "",
             }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => {
+              if (
+                !values.name ||
+                !values.date ||
+                !values.description ||
+                !values.location ||
+                !values.category
+              ) {
+                Alert.alert(
+                  "Missing fields",
+                  "Please complete all required fields",
+                  [
+                    {
+                      text: "Ok",
+                      onPress: () => console.log("Alert acknowledged"),
+                      style: "cancel",
+                    },
+                  ]
+                );
+                return;
+              }
+
+              // Submit the valid form data
+              console.log("Form Submitted:", values);
+            }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              setFieldValue,
+            }) => (
               <View style={styles.inputContainer}>
-                 <Text style={styles.headerText}> Lets get some details</Text>
+                <Text style={styles.headerText}> Lets get some details</Text>
                 <Text style={styles.labelText}>Whats your event called?</Text>
                 <TextInput
                   style={styles.textInput}
@@ -88,7 +119,8 @@ export default function PostEvent() {
                 />
                 <Text style={styles.labelText}>
                   Add a description for readers, use this as a chance to sell
-                  your event! Feel free to add useful info such as ticket links, clothing suggestions or event duration.
+                  your event! Feel free to add useful info such as ticket links,
+                  clothing suggestions or event duration.
                 </Text>
                 <TextInput
                   style={styles.textInput}
@@ -101,7 +133,10 @@ export default function PostEvent() {
                   textAlignVertical="top"
                   placeholderTextColor="#888"
                 />
-<Text style={styles.labelText}>Whats the address or location of the event? Make sure you can be found! </Text>
+                <Text style={styles.labelText}>
+                  Whats the address or location of the event? Make sure you can
+                  be found!{" "}
+                </Text>
                 <TextInput
                   style={styles.textInput}
                   placeholder="Event location/address"
@@ -109,25 +144,30 @@ export default function PostEvent() {
                   onChangeText={handleChange("location")}
                   placeholderTextColor="#888"
                 />
-<Text style={styles.labelText}>Select a main category type for the event. Think of the type of person you are trying to appeal to. </Text>
+                <Text style={styles.labelText}>
+                  Select a main category type for the event. Think of the type
+                  of person you are trying to appeal to.{" "}
+                </Text>
                 <Picker
                   selectedValue={values?.category}
                   onValueChange={handleChange("category")}
                   style={styles.picker}
+                  itemStyle={{ color: "#000" }}
                 >
-                  <Picker.Item
-                    label="Dropdown 1"
-                    value={"Dropdown"}
-                    color="#000"
-                  />
-                  <Picker.Item
-                    label="Dropdown 2"
-                    value={"Dropdown"}
-                    color="#000"
-                  />
+                  {categoryList &&
+                    categoryList.map((item, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={item.name}
+                        value={item.name}
+                      />
+                    ))}
                 </Picker>
 
-                <Text style={styles.labelText}>Use the calendar to set the event date. Users will be able to add this date to their device calendars. </Text>
+                <Text style={styles.labelText}>
+                  Use the calendar to set the event date. Users will be able to
+                  add this date to their device calendars.{" "}
+                </Text>
                 <TouchableOpacity
                   style={styles.calendarButton}
                   onPress={() => setShowDatePicker(true)} // Show date picker when clicked
@@ -142,7 +182,10 @@ export default function PostEvent() {
                     value={eventDate || new Date()} // Default to today's date if no date is selected
                     mode="date"
                     display="default"
-                    onChange={onChangeDate}
+                    onChange={(e, selectedDate) => {
+                      setEventDate(selectedDate); // Update local state
+                      handleChange("date")(selectedDate?.toISOString()); // Update Formik's value
+                    }}
                   />
                 )}
 
@@ -158,7 +201,7 @@ export default function PostEvent() {
                   activeOpacity={0.7}
                   onPress={handleSubmit}
                 >
-                  <Text style={styles.buttonText}>Submit for approval</Text>
+                  <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -173,52 +216,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    margin:10
+    paddingHorizontal: 20, // Add padding to avoid touching screen edges
+    paddingTop: 20,
   },
   inputContainer: {
-    justifyContent: "center",
-    alignItems: "center",
     width: "100%",
-    paddingTop: 10,
-    
+    marginTop: 20,
   },
-  backArrow: {
-    margin: 20,
+  backArrowContainer: {
     position: "absolute",
     top: 10,
-    left: 10,
+    left: "50%", // Center horizontally
+    transform: [{ translateX: -24 }], // Adjust to center based on icon width (48px)
+    zIndex: 10, // Ensure it appears above other elements
+  },
+  backArrow: {
+    padding: 10,
   },
   textInput: {
-    width: "80%",
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+    width: "100%",
+    paddingVertical: 14, // Slightly increased for better touch targets
+    paddingHorizontal: 16,
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#171616",
-    borderRadius: 8,
-    marginBottom: 15,
+    borderRadius: 10, // Increased for a smoother design
+    marginBottom: 20, // Ensure consistent spacing between inputs
     color: "#000",
   },
   picker: {
-    width: "80%",
-    paddingVertical: 12,
-    fontSize: 16,
+    width: "100%",
     borderWidth: 1,
     borderColor: "#171616",
-    borderRadius: 8,
-    marginBottom: 15,
-    color: "#000",
+    borderRadius: 10,
+    marginBottom: 20, // Space between picker and next element
   },
   button: {
     backgroundColor: "#171616",
     paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 18,
+    borderRadius: 18, // Smoother corners for buttons
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
-    width: "80%",
-    elevation: 5,
+    width: "100%", // Full width alignment
+    elevation: 5, // Subtle shadow for button emphasis
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -227,13 +268,12 @@ const styles = StyleSheet.create({
   calendarButton: {
     backgroundColor: "#171616",
     paddingVertical: 15,
-    paddingHorizontal: 30,
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
-    marginBottom:10,
-    width: "80%",
+    marginTop: 10,
+    marginBottom: 10,
+    width: "100%",
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -244,25 +284,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
   },
-
   labelText: {
     fontSize: 16,
     fontFamily: "outfit-regular",
     color: "#171616",
-    marginHorizontal:30,
-    marginBottom:5,
-    marginTop:20
-  },
-  selectedDate: {
-    fontSize: 16,
-    color: "#555",
-    marginTop: 10,
+    marginBottom: 10, // Tighter spacing for better grouping with inputs
+    marginTop: 20, // Consistent margin above labels
+    textAlign: "left", // Align text left for better readability
   },
   headerText: {
     fontSize: 24,
     fontFamily: "outfit-regular",
     color: "#171616",
-    marginTop:10,
+    marginBottom: 30, // Add space below header for breathing room
     textAlign: "center",
+  },
+  selectedDate: {
+    fontSize: 16,
+    color: "#555",
+    marginTop: 10,
   },
 });
