@@ -82,7 +82,6 @@ export default function SignUp() {
           .then(() => {
             console.log("User details saved to Firestore!");
             Alert.alert("Registration complete!", "Welcome to Tatodo");
-            
           })
           .catch((error) => {
             console.error("Error saving user details: ", error);
@@ -93,6 +92,17 @@ export default function SignUp() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage, errorCode);
+        switch (errorCode) {
+          case "auth/email-already-in-use":
+            Alert.alert(
+              "Error",
+              "This email is already in use. Try signing in."
+            );
+            break;
+          case "auth/invalid-email":
+            Alert.alert("Error", "The email entered is not valid.");
+            break;
+        }
       });
   };
 
@@ -125,9 +135,9 @@ export default function SignUp() {
                   placeholder="Enter your name"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoComplete="false"
+                  autoComplete="off"
+                  autoCorrect={false}
                   onChangeText={setName}
-                  
                 />
 
                 <Text style={styles.labelText}>Email address</Text>
@@ -135,9 +145,10 @@ export default function SignUp() {
                   placeholder="Enter email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoComplete="false"
+                  autoComplete="off"
+                  autoCorrect={false}
+                  autoCapitalize="none"
                   onChangeText={setEmail}
-                 
                 />
 
                 <Text style={styles.labelText}>Confirm email</Text>
@@ -145,21 +156,22 @@ export default function SignUp() {
                   placeholder="Confirm email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoComplete="false"
+                  autoComplete="off"
+                  autoCorrect={false}
+                  autoCapitalize="none"
                   onChangeText={setConfirmEmail}
-                  
                 />
 
                 <Text style={styles.labelText}>Create password</Text>
                 <TextInput
-                
                   placeholder="Create password"
                   secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoComplete="false"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect={false}
                   onChangeText={setPassword}
-                  
                 />
 
                 <Text style={styles.labelText}>Confirm password</Text>
@@ -168,7 +180,9 @@ export default function SignUp() {
                   secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
-                  autoComplete="false"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect={false}
                   onChangeText={setConfirmPassword}
                 />
                 <View style={styles.toggleContainer}>

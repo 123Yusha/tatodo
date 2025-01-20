@@ -95,6 +95,9 @@ signInWithEmailAndPassword(auth, email, password)
                 <Text style={styles.labelText}>Email address</Text>
                 <TextInput
                   placeholder="Enter email address"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect={false}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
                   onChangeText={(value) => setEmail(value)}
@@ -105,6 +108,9 @@ signInWithEmailAndPassword(auth, email, password)
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
                   secureTextEntry={true}
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect={false}
                   onChangeText={(value) => setPassword(value)}
                 />
                 <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onSignIn}>
