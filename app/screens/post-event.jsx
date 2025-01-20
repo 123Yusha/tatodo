@@ -12,15 +12,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { app } from "../../configs/FirebaseConfig";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { db, auth } from "../../configs/FirebaseConfig";
+import { addDoc, getDocs, collection } from "firebase/firestore";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function PostEvent() {
   const router = useRouter();
-  const db = getFirestore(app);
   const [categoryList, setCategoryList] = useState([]);
   const [eventDate, setEventDate] = useState(null); // Initially, no date is selected
   const [showDatePicker, setShowDatePicker] = useState(false); // Control date picker visibility
@@ -37,19 +36,42 @@ export default function PostEvent() {
   };
 
   useEffect(() => {
-    getCategoryList();
+    const fetchCategories = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Category"));
+        const categories = [];
+        querySnapshot.forEach((doc) => {
+          categories.push(doc.data());
+        });
+        setCategoryList(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        Alert.alert("Error", "Unable to load categories. Please try again.");
+      }
+    };
+    fetchCategories();
   }, []);
 
-  const getCategoryList = async () => {
-    setCategoryList([]);
-    const querySnapshot = await getDocs(collection(db, "Category"));
-    if (querySnapshot.empty) {
-      console.log("No documents found.");
-    } else {
-      querySnapshot.forEach((doc) => {
-        console.log("Docs:", doc.data());
-        setCategoryList((categoryList) => [...categoryList, doc.data()]);
+  const handleFormSubmit = async (values) => {
+    try {
+      // Get the current user
+      const user = auth.currentUser; // Use 'auth' here instead of getAuth()
+
+      // Add event document to Firestore, including user's email
+      const docRef = await addDoc(collection(db, "User Post's"), {
+        name: values.name,
+        date: values.date,
+        description: values.description,
+        location: values.location,
+        category: values.category,
+        userEmail: user.email, // Add user's email here
       });
+
+      console.log("Document written with ID: ", docRef.id);
+      Alert.alert("Success", "Event successfully posted!");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
 
@@ -93,10 +115,9 @@ export default function PostEvent() {
                   ]
                 );
                 return;
+              } else {
+                handleFormSubmit(values);
               }
-
-              // Submit the valid form data
-              console.log("Form Submitted:", values);
             }}
           >
             {({

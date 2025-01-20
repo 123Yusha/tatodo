@@ -14,11 +14,12 @@ import {
   Alert,
   StatusBar,
 } from "react-native";
-import { React, useState, useRef } from "react";
+import { React, useState } from "react";
 import { useRouter, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../configs/FirebaseConfig";
+import { auth, db } from "../../configs/FirebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -55,6 +56,13 @@ export default function SignUp() {
       );
       return;
     }
+    if (password.length < 6) {
+      Alert.alert(
+        "Insecure password",
+        "Password must be greater than 6 characters."
+      );
+      return;
+    }
 
     console.log(auth);
 
@@ -63,10 +71,23 @@ export default function SignUp() {
         // Signed up
         const user = userCredential.user;
         console.log("Account created for:", user);
-        Alert.alert(
-          "Registration complete!",
-          "Welcome to tatodo"
-        );
+
+        // Save user details to Firestore
+        const userRef = doc(db, "users", user.uid); // Reference to the user's document
+        setDoc(userRef, {
+          name: name,
+          email: email,
+          isEventOrganizer: isEnabled, // Store the event organizer status
+        })
+          .then(() => {
+            console.log("User details saved to Firestore!");
+            Alert.alert("Registration complete!", "Welcome to Tatodo");
+            
+          })
+          .catch((error) => {
+            console.error("Error saving user details: ", error);
+            Alert.alert("Error", "There was an error saving your details.");
+          });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -104,8 +125,9 @@ export default function SignUp() {
                   placeholder="Enter your name"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
+                  autoComplete="false"
                   onChangeText={setName}
-                
+                  
                 />
 
                 <Text style={styles.labelText}>Email address</Text>
@@ -113,7 +135,9 @@ export default function SignUp() {
                   placeholder="Enter email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
+                  autoComplete="false"
                   onChangeText={setEmail}
+                 
                 />
 
                 <Text style={styles.labelText}>Confirm email</Text>
@@ -121,28 +145,31 @@ export default function SignUp() {
                   placeholder="Confirm email address"
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
+                  autoComplete="false"
                   onChangeText={setConfirmEmail}
+                  
                 />
 
                 <Text style={styles.labelText}>Create password</Text>
                 <TextInput
-                  
-                  placeholder="Confirm password"
+                
+                  placeholder="Create password"
                   secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
+                  autoComplete="false"
                   onChangeText={setPassword}
+                  
                 />
 
                 <Text style={styles.labelText}>Confirm password</Text>
                 <TextInput
-                 
                   placeholder="Confirm password"
                   secureTextEntry={true}
                   placeholderTextColor={"grey"}
                   style={styles.inputBox}
+                  autoComplete="false"
                   onChangeText={setConfirmPassword}
-              
                 />
                 <View style={styles.toggleContainer}>
                   <Text style={styles.labelText}>
