@@ -11,14 +11,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { React, useState } from "react";
 import { Link } from "expo-router";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {auth} from "../../configs/FirebaseConfig";
+import { auth } from "../../configs/FirebaseConfig";
 
 export default function SignIn() {
   const [email, setEmail] = useState();
@@ -30,7 +30,7 @@ export default function SignIn() {
     router.back();
   };
 
-  const onSignIn=() => {
+  const onSignIn = () => {
     if (!email || !password) {
       Alert.alert("Missing fields", "Please complete all required fields", [
         {
@@ -42,30 +42,28 @@ export default function SignIn() {
       return;
     }
     const auth = getAuth();
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log("Signed in as:", user)
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode, errorMessage)
-    if (errorCode === "auth/invalid-credential") {
-      Alert.alert("Whoops!", "Invalid login credentials", [
-        {
-          text: "Ok",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-      ]);
-    }
-  });
-  }
-
-  
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log("Signed in as:", user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        if (errorCode === "auth/invalid-credential") {
+          Alert.alert("Whoops!", "Invalid login credentials", [
+            {
+              text: "Ok",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+          ]);
+        }
+      });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
@@ -81,14 +79,14 @@ signInWithEmailAndPassword(auth, email, password)
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
               <View style={styles.backArrowContainer}>
-              <TouchableOpacity onPress={handleBack}>
-                <Ionicons
-                  name="arrow-back"
-                  size={35}
-                  color="#171616"
-                  style={styles.backArrow}
-                />
-              </TouchableOpacity>
+                <TouchableOpacity onPress={handleBack}>
+                  <Ionicons
+                    name="arrow-back"
+                    size={35}
+                    color="#171616"
+                    style={styles.backArrow}
+                  />
+                </TouchableOpacity>
               </View>
               <View style={styles.inputContainer}>
                 <Text style={styles.headerText}>Sign in to your account</Text>
@@ -113,10 +111,14 @@ signInWithEmailAndPassword(auth, email, password)
                   autoCorrect={false}
                   onChangeText={(value) => setPassword(value)}
                 />
-                <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onSignIn}>
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={0.7}
+                  onPress={onSignIn}
+                >
                   <Text style={styles.buttonText}>Sign in</Text>
                 </TouchableOpacity>
-                
+
                 <Link href="/screens/sign-up" asChild>
                   <TouchableOpacity style={styles.linkButton}>
                     <Text style={styles.linkText}>
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontFamily: "outfit-regular",
+    fontFamily: "outfit-bold",
     color: "#171616",
     marginBottom: 20,
     textAlign: "center",

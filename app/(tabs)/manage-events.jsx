@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontFamily: "outfit-regular",
+    fontFamily: "outfit-bold",
     color: "#171616",
     marginBottom: 20,
     textAlign: "center",

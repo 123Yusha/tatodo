@@ -69,6 +69,8 @@ export default function PostEvent() {
 
       console.log("Document written with ID: ", docRef.id);
       Alert.alert("Success", "Event successfully posted!");
+      router.push("/(tabs)/manage-events")
+
     } catch (e) {
       console.error("Error adding document: ", e);
       Alert.alert("Error", "Something went wrong. Please try again.");
@@ -141,7 +143,7 @@ export default function PostEvent() {
                 <Text style={styles.labelText}>
                   Add a description for readers, use this as a chance to sell
                   your event! Feel free to add useful info such as ticket links,
-                  clothing suggestions or event duration.
+                  clothing suggestions or start times.
                 </Text>
                 <TextInput
                   style={styles.textInput}
@@ -315,7 +317,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontFamily: "outfit-regular",
+    fontFamily: "outfit-bold",
     color: "#171616",
     marginBottom: 30, // Add space below header for breathing room
     textAlign: "center",

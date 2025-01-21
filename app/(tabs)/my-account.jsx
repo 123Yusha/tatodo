@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from "react-native";
 import React from "react";
 import { signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
@@ -16,41 +16,36 @@ export default function MyAccount() {
   return (
     <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.container}>
+         <ScrollView
+              style={styles.scrollContainer}
+              contentContainerStyle={styles.container}
+            >
+       <Text style={styles.headerText}>My account</Text>
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Text style={styles.buttonText}>Log out</Text>
         </TouchableOpacity>
-      </View>
+        </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#fff",
+    padding: 10,
   },
-  textContainer: {
-    marginBottom: 40, // Provides spacing between text and buttons
+  container: {
+    padding: 10,
+    alignItems: "center", // Horizontally center content inside the scroll view
+    flexGrow: 1, // Ensures the content takes up available space
   },
-  text: {
-    fontSize: 20,
-    color: "#171616",
-    fontFamily: "outfit-regular",
-    textAlign: "center",
-    margin: 10,
-  },
-  boldText: {
+  headerText: {
+    fontSize: 24,
     fontFamily: "outfit-bold",
-  },
-  image: {
-    marginBottom: 20, // Space between the image and the text
-  },
-  buttonContainer: {
-    alignItems: "center",
-    width: "100%", // Ensures the buttons take full width
+    color: "#171616",
+    marginBottom: 20,
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#171616",
@@ -59,8 +54,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20, // Adds spacing between buttons
-    width: "100%",
+    marginTop: 20,
+    width: "80%",
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

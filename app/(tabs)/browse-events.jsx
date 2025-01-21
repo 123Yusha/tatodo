@@ -10,7 +10,7 @@ export default function BrowseEvents() {
         style={styles.container}
       >
         <View style={styles.container}>
-          <Text style={styles.headerText}>Browse all events</Text>
+          <Text style={styles.headerText}>All events</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontFamily: "outfit-regular",
+    fontFamily: "outfit-bold",
     color: "#171616",
     marginTop:10,
     textAlign: "center",
