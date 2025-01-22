@@ -1,14 +1,7 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../../configs/FirebaseConfig";
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Header() {
   const [username, setUserName] = useState("");
@@ -17,7 +10,6 @@ export default function Header() {
     const fetchUserData = async () => {
       const user = auth.currentUser;
       if (user) {
-        // Fetch user's name from the 'users' collection
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
@@ -49,30 +41,28 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    paddingVertical: 16,
     backgroundColor: "#fff",
+    marginBottom: 10, // Spacing below the Header
   },
   headerText: {
     fontSize: 24,
     fontFamily: "outfit-bold",
     color: "#171616",
-    margin: 10,
+    marginBottom: 12, // Spacing between the text and input
     textAlign: "center",
   },
+  inputContainer: {
+    alignItems: "center",
+    width: "100%",
+  },
   inputBox: {
-    width: "80%",
+    width: "90%", // Take most of the screen width
     paddingVertical: 12,
     paddingHorizontal: 15,
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#171616",
     borderRadius: 8,
-    marginBottom: 15,
-  },
-  inputContainer: {
-    flex: 1, // Takes the remaining space
-    alignItems: "center", // Horizontally centers the content
-    width: "100%", // Full width of the screen
-    padding: 10, // Additional space from the top
   },
 });

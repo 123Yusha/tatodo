@@ -8,47 +8,58 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-
-const { width } = Dimensions.get("window"); // Get device width for responsive design
+const { width } = Dimensions.get("window");
 
 const getIcon = (name) => {
-  if (name === "Music") return <FontAwesome name="music" size={32} color="black" />;
-  if (name === "Educational") return <FontAwesome6 name="book-open-reader" size={24} color="black" />
-  if (name === "Nightlife") return <MaterialCommunityIcons name="party-popper" size={24} color="black" />
-  if (name === "Seasonal") return <FontAwesome name="tree" size={24} color="black" />;
-  if (name === "Business") return <FontAwesome6 name="business-time" size={24} color="black" />;
-  if (name === "Sports") return <FontAwesome name="soccer-ball-o" size={24} color="black" />
-  if (name === "Family & Kids") return <MaterialIcons name="family-restroom" size={24} color="black" />;
-  if (name === "Markets & Fairs") return <FontAwesome5 name="store" size={24} color="black" />
-  if (name === "Arts") return <FontAwesome name="paint-brush" size={24} color="black" />
-  if (name === "Outdoors") return <FontAwesome name="leaf" size={24} color="black" />
-  if (name === "Food & Drink") return <Ionicons name="fast-food" size={24} color="black" />
-  return <FontAwesome name="question-circle" size={32} color="black" />; // Default icon
+  switch (name) {
+    case "Music":
+      return <FontAwesome name="music" size={32} color="black" />;
+    case "Educational":
+      return <FontAwesome6 name="book-open-reader" size={24} color="black" />;
+    case "Nightlife":
+      return <MaterialCommunityIcons name="party-popper" size={24} color="black" />;
+    case "Seasonal":
+      return <FontAwesome name="tree" size={24} color="black" />;
+    case "Business":
+      return <FontAwesome6 name="business-time" size={24} color="black" />;
+    case "Sports":
+      return <FontAwesome name="soccer-ball-o" size={24} color="black" />;
+    case "Family & Kids":
+      return <MaterialIcons name="family-restroom" size={24} color="black" />;
+    case "Markets & Fairs":
+      return <FontAwesome5 name="store" size={24} color="black" />;
+    case "Arts":
+      return <FontAwesome5 name="theater-masks" size={24} color="black" />;
+    case "Outdoors":
+      return <FontAwesome name="leaf" size={24} color="black" />;
+    case "Food & Drink":
+      return <Ionicons name="fast-food" size={24} color="black" />;
+    default:
+      return <FontAwesome name="question-circle" size={32} color="black" />;
+  }
 };
 
 export default function Categories({ categoryList }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.subHeadText}>Events by Category</Text>
+      <Text style={styles.subHeadText}>Events by category</Text>
       <FlatList
         data={categoryList}
-       
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.categoryItem}>
-            {/* Render the icon */}
             {getIcon(item.name)}
             <Text style={styles.categoryText}>{item.name}</Text>
           </TouchableOpacity>
         )}
-        horizontal // Makes the list scroll horizontally
-        showsHorizontalScrollIndicator={true} // Hides the scroll indicator
-        contentContainerStyle={styles.slider} // Add spacing for slider padding
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.slider}
       />
     </View>
   );
@@ -56,13 +67,13 @@ export default function Categories({ categoryList }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
+    paddingVertical: 16,
+    marginBottom: 10, // Add consistent spacing between components
     backgroundColor: "#fff",
   },
   subHeadText: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "outfit-bold",
     marginBottom: 16,
     textAlign: "center",
   },
@@ -70,8 +81,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   categoryItem: {
-    width: width * 0.4, // Make each item a percentage of screen width for responsiveness
-    height: width * 0.4, // Ensure the height matches the width for a square shape
+    width: width * 0.4,
+    height: width * 0.4,
     marginHorizontal: 8,
     backgroundColor: "#f9f9f9",
     borderRadius: 10,
@@ -88,4 +99,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 

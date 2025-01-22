@@ -8,12 +8,14 @@ import {
   TextInput,
   Alert,
   StatusBar,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { db, auth } from "../../configs/FirebaseConfig";
-import { addDoc, getDocs, collection } from "firebase/firestore";
+import { addDoc, getDocs, collection, Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -56,15 +58,17 @@ export default function PostEvent() {
     try {
       // Get the current user
       const user = auth.currentUser; // Use 'auth' here instead of getAuth()
+      const formattedDate = Timestamp.fromDate(new Date(values.date));
 
       // Add event document to Firestore, including user's email
       const docRef = await addDoc(collection(db, "User Post's"), {
         name: values.name,
-        date: values.date,
+        date: formattedDate,
         description: values.description,
         location: values.location,
         category: values.category,
         userEmail: user.email, // Add user's email here
+        createdAt: Timestamp.now(),
       });
 
       console.log("Document written with ID: ", docRef.id);
@@ -78,11 +82,15 @@ export default function PostEvent() {
   };
 
   return (
+    <KeyboardAvoidingView style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}>
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
         style={styles.container}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.container}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backArrow}>
@@ -206,8 +214,10 @@ export default function PostEvent() {
                     mode="date"
                     display="default"
                     onChange={(e, selectedDate) => {
-                      setEventDate(selectedDate); // Update local state
-                      handleChange("date")(selectedDate?.toISOString()); // Update Formik's value
+                      if (selectedDate) {
+                        setEventDate(selectedDate);
+                        setFieldValue("date", selectedDate.toISOString()); // Keep ISO for form validation
+                      }
                     }}
                   />
                 )}
@@ -231,7 +241,10 @@ export default function PostEvent() {
           </Formik>
         </View>
       </ScrollView>
+      
     </SafeAreaView>
+    </KeyboardAvoidingView>
+    
   );
 }
 
