@@ -18,6 +18,8 @@ const { width } = Dimensions.get("window");
 
 const getIcon = (name) => {
   switch (name) {
+    case "Pets":
+      return <MaterialIcons name="pets" size={24} color="black" />
     case "Music":
       return <FontAwesome name="music" size={32} color="black" />;
     case "Educational":
@@ -90,6 +92,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Shadow for Android
   },
   categoryText: {
     fontSize: 16,

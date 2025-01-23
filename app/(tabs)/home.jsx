@@ -1,11 +1,12 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  Dimensions
+  Dimensions,
+  ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import Header from "../components/homescreen/Header";
 import Categories from "../components/homescreen/Categories";
 import LatestEvents from "../components/homescreen/LatestEvents";
@@ -37,12 +38,11 @@ export default function Home() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Query to get the two newest posts, ordered by createdAt in descending order
         const querySnapshot = await getDocs(
           query(
             collection(db, "User Post's"),
-            orderBy("createdAt", "desc"), // Order by the createdAt field in descending order
-            limit(3) // Limit the result to only 3 posts
+            orderBy("createdAt", "desc"),
+            limit(3)
           )
         );
         const events = [];
@@ -60,19 +60,20 @@ export default function Home() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* ScrollView is wrapping all the content except the FlatList */}
         <Header />
         <Categories categoryList={categoryList} />
-        {/* Keep FlatList inside LatestEvents */}
         <LatestEvents eventList={eventList} />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#fff",
+    paddingBottom: 16, // Adding bottom padding to prevent cut-off at the bottom of the screen
   },
 });
