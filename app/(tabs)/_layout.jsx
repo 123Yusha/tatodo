@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -6,6 +5,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { auth, db } from "../../configs/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+
 
 export default function TabLayout() {
   const [isEventOrganizer, setIsEventOrganizer] = useState(false);
@@ -25,7 +25,7 @@ export default function TabLayout() {
 
     fetchUserData();
   }, []);
-  
+
   return (
     <Tabs
       screenOptions={{
@@ -53,8 +53,8 @@ export default function TabLayout() {
           ),
         }}
       />
-       
-       <Tabs.Screen
+
+      <Tabs.Screen
         name="manage-events"
         options={{
           title: "Manage",
@@ -68,7 +68,7 @@ export default function TabLayout() {
           href: isEventOrganizer ? "/manage-events" : null, // Hide the tab if not an event organizer
         }}
       />
-       
+
       <Tabs.Screen
         name="my-account"
         options={{

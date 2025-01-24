@@ -49,12 +49,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "outfit-bold",
     color: "#171616",
-    marginBottom: 12, // Spacing between the text and input
+    margin: 10, // Spacing between the text and input
     textAlign: "center",
   },
   inputContainer: {
     alignItems: "center",
     width: "100%",
+    margin: 10,
   },
   inputBox: {
     width: "90%", // Take most of the screen width
@@ -64,5 +65,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#171616",
     borderRadius: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2, // For Android shadow
   },
 });

@@ -1,6 +1,6 @@
 # Tatodo
 
-Tatodo is a community events app designed to connect local businesses, event organizers, and residents. It provides a free platform for businesses to advertise their events while giving locals a centralized place to discover and engage with events in their area.
+Tatodo is a community events app designed to connect local businesses, event organizers, and residents. It provides a free platform for businesses to advertise their events while giving locals a centralized place to discover and engage with events in their area! 
 
 ## Features
 

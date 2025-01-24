@@ -13,19 +13,22 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { router, useRouter,  } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
 const getIcon = (name) => {
   switch (name) {
     case "Pets":
-      return <MaterialIcons name="pets" size={24} color="black" />
+      return <MaterialIcons name="pets" size={24} color="black" />;
     case "Music":
       return <FontAwesome name="music" size={32} color="black" />;
     case "Educational":
       return <FontAwesome6 name="book-open-reader" size={24} color="black" />;
     case "Nightlife":
-      return <MaterialCommunityIcons name="party-popper" size={24} color="black" />;
+      return (
+        <MaterialCommunityIcons name="party-popper" size={24} color="black" />
+      );
     case "Seasonal":
       return <FontAwesome name="tree" size={24} color="black" />;
     case "Business":
@@ -48,13 +51,26 @@ const getIcon = (name) => {
 };
 
 export default function Categories({ categoryList }) {
+
+  const router = useRouter();
+
+  const handleCategoryPress = (categoryName) => {
+    router.push({
+      pathname: "/screens/EventsByCategory",
+      params: { category: categoryName }, //pass the event name to eventsbycategory as a parameter
+    });
+  };
+  
   return (
     <View style={styles.container}>
       <Text style={styles.subHeadText}>Events by category</Text>
       <FlatList
         data={categoryList}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.categoryItem}>
+          <TouchableOpacity
+            style={styles.categoryItem}
+            onPress={() => handleCategoryPress(item.name)}
+          >
             {getIcon(item.name)}
             <Text style={styles.categoryText}>{item.name}</Text>
           </TouchableOpacity>
@@ -105,5 +121,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-
