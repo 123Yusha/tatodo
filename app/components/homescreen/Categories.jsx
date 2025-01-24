@@ -13,7 +13,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useRouter,  } from "expo-router";
+import { useRouter,  } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -55,9 +55,10 @@ export default function Categories({ categoryList }) {
   const router = useRouter();
 
   const handleCategoryPress = (categoryName) => {
+    
     router.push({
       pathname: "/screens/EventsByCategory",
-      params: { category: categoryName }, //pass the event name to eventsbycategory as a parameter
+      params: { categoryName: categoryName }, //pass the event name to eventsbycategory as a parameter
     });
   };
   

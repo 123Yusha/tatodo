@@ -9,15 +9,13 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter, useGlobalSearchParams } from "expo-router";
+import { useRouter, useGlobalSearchParams, useLocalSearchParams } from "expo-router";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-
 export default function EventsByCategory() {
-
-  const { category } = useGlobalSearchParams(); // receive event na,e as a parameter from categories
+  const { categoryName } = useGlobalSearchParams(); // receive event name as a parameter from categories
   const [eventList, setEventList] = useState([]);
   const router = useRouter();
 
@@ -41,30 +39,33 @@ export default function EventsByCategory() {
   };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const eventsQuery = query(
-          collection(db, "User Post's"),
-          where("category", "==", category),
-          orderBy("createdAt", "desc")
-        );
-        const querySnapshot = await getDocs(eventsQuery);
-        const events = [];
-        querySnapshot.forEach((doc) => {
-          events.push({ id: doc.id, ...doc.data() });
-        });
-        setEventList(events);
-        console.log(eventList)
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    fetchEvents();
-  }, [category]);
+      const fetchEvents = async () => {
+        try {
+          
+          const querySnapshot = await getDocs(
+            query(
+              collection(db, "User Post's"),
+              where("category", "==", categoryName ),
+              orderBy("createdAt", "desc") 
+            )
+          );
+          const events = [];
+          querySnapshot.forEach((doc) => {
+            console.log(doc.id, doc.data());
+            events.push({ id: doc.id, ...doc.data() });
+          });
+          setEventList(events);
+        } catch (error) {
+          console.error("Error fetching events:", error);
+        }
+      };
+      fetchEvents();
+    }, []);
+  const handlePress = () => {
+    router.push("/screens/EventDetails");
+  };
 
-  
-
-return (
+  return (
     <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.backArrowContainer}>
@@ -78,11 +79,14 @@ return (
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <Text style={styles.headerText}>{category} events</Text>
+        <Text style={styles.headerText}>{categoryName} events</Text>
         <FlatList
           data={eventList}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.eventItem}>
+            <TouchableOpacity
+              style={styles.eventItem}
+              onPress={() => handlePress()}
+            >
               <View style={styles.eventDetails}>
                 <Text style={styles.eventName}>{item.name}</Text>
                 <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
@@ -108,8 +112,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    
-    
   },
   backArrowContainer: {
     position: "absolute",
