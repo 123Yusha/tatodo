@@ -1,9 +1,18 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import {
+  useRouter,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
+
 
 
 export default function LatestEvents({ eventList }) {
+
+  const router = useRouter();
+
   const formatDate = (date) => {
     if (date.toDate) {
       date = date.toDate();
@@ -19,13 +28,22 @@ export default function LatestEvents({ eventList }) {
     return "Invalid date";
   };
 
+  const handlePress = (item ) => {
+    const { id } = item;
+    router.push({
+      pathname: "/screens/EventDetails",
+      params: { id },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.subHeadText}>Latest events</Text>
       <FlatList
         data={eventList}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.eventItem}>
+          <TouchableOpacity style={styles.eventItem}
+          onPress={() => handlePress(item)}>
             <View style={styles.eventDetails}>
               <Text style={styles.eventName}>{item.name}</Text>
               <Text style={styles.eventDate}>{formatDate(item.date)}</Text>

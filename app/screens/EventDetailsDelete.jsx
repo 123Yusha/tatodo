@@ -7,12 +7,12 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  Alert
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import * as Calendar from "expo-calendar";
 
 export default function EventDetails() {
   const { id } = useGlobalSearchParams(); // Receive the event id as a param
@@ -53,46 +53,23 @@ export default function EventDetails() {
   if (error) {
     return <Text>{error}</Text>;
   }
-  const addEventToCalendar = async () => {
+
+  const handleDeleteEvent = async () => {
     try {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission Denied", "Calendar access is required to add events.");
-        return;
-      }
+      const docRef = doc(db, "User Post's", id);
+      await deleteDoc(docRef); // Delete the event
 
-      const calendars = await Calendar.getCalendarsAsync();
-      const defaultCalendar = calendars.find((cal) => cal.isPrimary) || calendars[0];
-
-      const eventId = await Calendar.createEventAsync(defaultCalendar.id, {
-        title: eventDetails.name,
-        location: eventDetails.location,
-        startDate: new Date(eventDetails.date.toDate()),
-        endDate: new Date(new Date(eventDetails.date.toDate()).getTime() + 2 * 60 * 60 * 1000), // Add 2 hours
-        timeZone: "GMT", // Adjust timezone if needed
-        notes: eventDetails.description,
-      });
-
-      Alert.alert("Success", "Event added to your calendar!");
-    } catch (error) {
-      console.error("Error adding event to calendar:", error);
-      Alert.alert("Error", "Could not add the event to your calendar.");
+      // Show success alert
+      Alert.alert("Success", "Event deleted successfully.", [
+        {
+          text: "OK",
+          onPress: () => router.push("manage-events"), // Optionally, navigate back after delete
+        },
+      ]);
+    } catch (err) {
+      // Handle any error
+      Alert.alert("Error", "There was an issue deleting the event.");
     }
-  };
-
-  const formatDate = (date) => {
-    if (date.toDate) {
-      date = date.toDate();
-    }
-    if (date instanceof Date && !isNaN(date)) {
-      return date.toLocaleDateString("en-GB", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    }
-    return "Invalid date";
   };
 
   return (
@@ -110,7 +87,7 @@ export default function EventDetails() {
       </View>
       {eventDetails && (
         <ScrollView style={styles.eventDetails}>
-          <Text style={styles.eventName}>{eventDetails.name}</Text>
+          <Text style={styles.eventName}>{eventDetails.name}- ORGANISER!!!</Text>
           <Text style={styles.eventLocation}>
             Where: {eventDetails.location}
           </Text>
@@ -120,21 +97,33 @@ export default function EventDetails() {
           <Text style={styles.eventCategory}>
             Category: {eventDetails.category}
           </Text>
-          <Text style={styles.subHeadDescription}>Description</Text>
           <Text style={styles.eventDescription}>
             {eventDetails.description}
           </Text>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7} >
-            <Text style={styles.buttonText}>Register interest</Text>
+          <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={handleDeleteEvent}>
+            <Text style={styles.buttonText}>Delete event</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={addEventToCalendar}>
-            <Text style={styles.buttonText}>Add to calender</Text>
-          </TouchableOpacity>
+         
         </ScrollView>
       )}
     </SafeAreaView>
   );
 }
+
+const formatDate = (date) => {
+  if (date.toDate) {
+    date = date.toDate();
+  }
+  if (date instanceof Date && !isNaN(date)) {
+    return date.toLocaleDateString("en-GB", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+  return "Invalid date";
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -179,12 +168,6 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-bold",
     color: "#555",
     marginBottom: 10,
-  },
-  subHeadDescription: {
-    fontSize: 18,
-    fontFamily:"outfit-bold",
-    color:"#555",
-    marginTop: 10
   },
   button: {
     backgroundColor: "#171616",

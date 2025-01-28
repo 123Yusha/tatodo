@@ -8,9 +8,13 @@ import {
   StatusBar,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
+import {
+  useRouter,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { db } from "../../configs/FirebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { getAuth } from "firebase/auth";
 
@@ -34,7 +38,9 @@ export default function ManageEvents() {
 
         const eventsQuery = query(
           collection(db, "User Post's"),
+          orderBy("createdAt", "desc"),
           where("userEmail", "==", userEmail)
+          
         );
 
         const querySnapshot = await getDocs(eventsQuery);
@@ -74,7 +80,7 @@ export default function ManageEvents() {
   };
 
   const renderEventItem = ({ item }) => (
-    <TouchableOpacity style={styles.eventItem} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.eventItem} activeOpacity={0.7} onPress={() => handlePress(item)}>
       <View style={styles.eventDetails}>
         <Text style={styles.eventName}>{item.name}</Text>
         <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
@@ -82,6 +88,13 @@ export default function ManageEvents() {
       <AntDesign name="arrowright" size={24} color="black" />
     </TouchableOpacity>
   );
+  const handlePress = (item ) => {
+    const { id } = item;
+    router.push({
+      pathname: "/screens/EventDetailsDelete",
+      params: { id },
+    });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>

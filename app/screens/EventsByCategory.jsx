@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter, useGlobalSearchParams, useLocalSearchParams } from "expo-router";
+import {
+  useRouter,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -39,30 +43,36 @@ export default function EventsByCategory() {
   };
 
   useEffect(() => {
-      const fetchEvents = async () => {
-        try {
+    const fetchEvents = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          query(
+            collection(db, "User Post's"),
+            where("category", "==", categoryName),
+            orderBy("createdAt", "desc")
+          )
+        );
+        const events = [];
+        querySnapshot.forEach((doc) => {
+          console.log("ID:", doc.id, "DATA:", doc.data());
           
-          const querySnapshot = await getDocs(
-            query(
-              collection(db, "User Post's"),
-              where("category", "==", categoryName ),
-              orderBy("createdAt", "desc") 
-            )
-          );
-          const events = [];
-          querySnapshot.forEach((doc) => {
-            console.log(doc.id, doc.data());
-            events.push({ id: doc.id, ...doc.data() });
-          });
-          setEventList(events);
-        } catch (error) {
-          console.error("Error fetching events:", error);
-        }
-      };
-      fetchEvents();
-    }, []);
-  const handlePress = () => {
-    router.push("/screens/EventDetails");
+          events.push({ id: doc.id, ...doc.data() });
+          
+        });
+        setEventList(events);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  const handlePress = (item ) => {
+    const { id } = item;
+    router.push({
+      pathname: "/screens/EventDetails",
+      params: { id },
+    });
   };
 
   return (
@@ -85,7 +95,7 @@ export default function EventsByCategory() {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.eventItem}
-              onPress={() => handlePress()}
+              onPress={() => handlePress(item)}
             >
               <View style={styles.eventDetails}>
                 <Text style={styles.eventName}>{item.name}</Text>

@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCalendarsUsageDescription": "This app requires access to your calendar to add events.",
+        "NSRemindersUsageDescription": "This app requires access to your reminders to schedule events."
+      }
     },
     "android": {
       "adaptiveIcon": {

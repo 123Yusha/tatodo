@@ -12,9 +12,15 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../configs/FirebaseConfig";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import {
+  useRouter,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 
 export default function BrowseEvents() {
   const [eventList, setEventList] = useState([]);
+  const router = useRouter();
 
   const formatDate = (date) => {
     if (date.toDate) {
@@ -29,6 +35,14 @@ export default function BrowseEvents() {
       });
     }
     return "Invalid date";
+  };
+
+  const handlePress = (item ) => {
+    const { id } = item;
+    router.push({
+      pathname: "/screens/EventDetails",
+      params: { id },
+    });
   };
 
   useEffect(() => {
@@ -62,7 +76,8 @@ export default function BrowseEvents() {
         <FlatList
           data={eventList}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.eventItem}>
+            <TouchableOpacity style={styles.eventItem}
+            onPress={() => handlePress(item)}>
               <View style={styles.eventDetails}>
                 <Text style={styles.eventName}>{item.name}</Text>
                 <Text style={styles.eventDate}>{formatDate(item.date)}</Text>

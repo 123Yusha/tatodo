@@ -204,7 +204,7 @@ export default function PostEvent() {
                   onPress={() => setShowDatePicker(true)} // Show date picker when clicked
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.buttonText}>Set event date</Text>
+                  <Text style={styles.buttonText}>Set a calender date</Text>
                 </TouchableOpacity>
 
                 {/* DateTimePicker */}
