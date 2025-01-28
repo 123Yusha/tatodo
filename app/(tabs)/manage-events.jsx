@@ -108,6 +108,7 @@ export default function ManageEvents() {
         >
           <Text style={styles.buttonText}>Post a new event</Text>
         </TouchableOpacity>
+        <Text style={styles.subHeadText}>Your hosted events</Text>
         {loading ? (
           <Text style={styles.loadingText}>Loading...</Text>
         ) : eventList.length > 0 ? (
@@ -143,6 +144,13 @@ const styles = StyleSheet.create({
     color: "#171616",
     textAlign: "center",
     marginBottom: 20,
+  },
+  subHeadText: {
+    fontSize: 20,
+    fontFamily: "outfit-bold",
+    marginTop: 20,
+    marginBottom:5,
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#171616",

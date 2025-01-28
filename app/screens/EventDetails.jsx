@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
@@ -53,32 +54,6 @@ export default function EventDetails() {
   if (error) {
     return <Text>{error}</Text>;
   }
-  const addEventToCalendar = async () => {
-    try {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission Denied", "Calendar access is required to add events.");
-        return;
-      }
-
-      const calendars = await Calendar.getCalendarsAsync();
-      const defaultCalendar = calendars.find((cal) => cal.isPrimary) || calendars[0];
-
-      const eventId = await Calendar.createEventAsync(defaultCalendar.id, {
-        title: eventDetails.name,
-        location: eventDetails.location,
-        startDate: new Date(eventDetails.date.toDate()),
-        endDate: new Date(new Date(eventDetails.date.toDate()).getTime() + 2 * 60 * 60 * 1000), // Add 2 hours
-        timeZone: "GMT", // Adjust timezone if needed
-        notes: eventDetails.description,
-      });
-
-      Alert.alert("Success", "Event added to your calendar!");
-    } catch (error) {
-      console.error("Error adding event to calendar:", error);
-      Alert.alert("Error", "Could not add the event to your calendar.");
-    }
-  };
 
   const formatDate = (date) => {
     if (date.toDate) {
@@ -93,6 +68,57 @@ export default function EventDetails() {
       });
     }
     return "Invalid date";
+  };
+
+  const addEventToCalendar = async () => {
+    try {
+      // Request calendar permissions
+      const { status: calendarStatus } =
+        await Calendar.requestCalendarPermissionsAsync();
+      const { status: remindersStatus } =
+        await Calendar.requestRemindersPermissionsAsync();
+
+      if (calendarStatus !== "granted" || remindersStatus !== "granted") {
+        alert("Both Calendar and Reminders permissions are required.");
+        return;
+      }
+
+      // Get available calendars
+      const calendars = await Calendar.getCalendarsAsync();
+
+      const defaultCalendar = calendars.find(
+        (cal) => cal.isPrimary || cal.allowsModifications
+      );
+
+      if (!defaultCalendar) {
+        alert("No suitable calendar found.");
+        return;
+      }
+      const startDate = eventDetails?.date?.toDate
+        ? eventDetails.date.toDate()
+        : new Date();
+      const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1-hour duration
+
+      // Add an event
+      const eventDetailsForCalendar = {
+        title: eventDetails.name,
+        startDate,
+        endDate,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Adjust to your timezone
+        location: eventDetails.location,
+      };
+
+      await Calendar.createEventAsync(
+        defaultCalendar.id,
+        eventDetailsForCalendar
+      );
+      Alert.alert("Event added!", "Edit your device calendar to modify.", [
+        { text: "OK", style: "default" },
+      ]);
+    } catch (error) {
+      console.error("Error adding event to calendar:", error);
+      alert("Failed to add event to calendar.");
+    }
   };
 
   return (
@@ -124,11 +150,15 @@ export default function EventDetails() {
           <Text style={styles.eventDescription}>
             {eventDetails.description}
           </Text>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7} >
+          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
             <Text style={styles.buttonText}>Register interest</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={addEventToCalendar}>
-            <Text style={styles.buttonText}>Add to calender</Text>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.7}
+            onPress={addEventToCalendar}
+          >
+            <Text style={styles.buttonText}>Add to calendar</Text>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -182,9 +212,9 @@ const styles = StyleSheet.create({
   },
   subHeadDescription: {
     fontSize: 18,
-    fontFamily:"outfit-bold",
-    color:"#555",
-    marginTop: 10
+    fontFamily: "outfit-bold",
+    color: "#555",
+    marginTop: 10,
   },
   button: {
     backgroundColor: "#171616",

@@ -13,12 +13,18 @@
       "infoPlist": {
         "NSCalendarsUsageDescription": "This app requires access to your calendar to add events.",
         "NSRemindersUsageDescription": "This app requires access to your reminders to schedule events."
-      }
+      },
+      "bundleIdentifier": "com.123yusha.tatodo"
     },
     "android": {
+      
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/tatodo-landing.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "READ_CALENDAR",
+          "WRITE_CALENDAR"
+        ]
       }
     },
     "web": {
@@ -40,6 +46,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "60aeb724-8373-4d5e-89e7-2252a8e99c2e"
+      }
+    },
+    "owner": "123yusha"
   }
 }

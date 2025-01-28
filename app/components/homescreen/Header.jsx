@@ -25,15 +25,7 @@ export default function Header() {
     <View style={styles.container}>
       <Text style={styles.headerText}>Welcome to tatodo, {username}!</Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Search for an event..."
-          placeholderTextColor={"grey"}
-          style={styles.inputBox}
-          autoComplete="off"
-          autoCorrect={false}
-          autoCapitalize="none"
-          onChangeText={(value) => console.log(value)}
-        />
+        <Text style={styles.inputText}>Discover what's happening in your community! Explore events near you, register your interest, and even add them to your calendar. Hosting an event? Spread the word- all for free!</Text>
       </View>
     </View>
   );
@@ -49,13 +41,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "outfit-bold",
     color: "#171616",
-    margin: 10, // Spacing between the text and input
+    marginHorizontal: 10,
+    marginTop: 20,
     textAlign: "center",
   },
   inputContainer: {
     alignItems: "center",
-    width: "100%",
     margin: 10,
+  },
+  inputText: {
+    fontFamily: "outfit-regular",
+    fontSize: 16,
+    padding: 15,
   },
   inputBox: {
     width: "90%", // Take most of the screen width

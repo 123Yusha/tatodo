@@ -87,7 +87,7 @@ export default function EventDetails() {
       </View>
       {eventDetails && (
         <ScrollView style={styles.eventDetails}>
-          <Text style={styles.eventName}>{eventDetails.name}- ORGANISER!!!</Text>
+          <Text style={styles.eventName}>{eventDetails.name}</Text>
           <Text style={styles.eventLocation}>
             Where: {eventDetails.location}
           </Text>
