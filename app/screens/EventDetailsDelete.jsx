@@ -35,10 +35,10 @@ export default function EventDetails() {
         if (docSnap.exists()) {
           setEventDetails(docSnap.data()); // Set event data
         } else {
-          setError("Event not found.");
+          setError();
         }
       } catch (err) {
-        setError("Error fetching event details.");
+        setError();
       } finally {
         setLoading(false);
       }
@@ -69,6 +69,9 @@ export default function EventDetails() {
   }
 
   const handleDeleteEvent = async () => {
+    // Clear any existing errors before deletion
+    setError(null);
+
     try {
       const docRef = doc(db, "User Post's", id);
       await deleteDoc(docRef); // Delete the event
@@ -82,7 +85,7 @@ export default function EventDetails() {
       ]);
     } catch (err) {
       // Handle any error
-      Alert.alert("Error", "There was an issue deleting the event.");
+      setError("Error deleting event.");
     }
   };
 
@@ -223,3 +226,4 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+

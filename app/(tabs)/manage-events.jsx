@@ -21,6 +21,7 @@ export default function ManageEvents() {
   const router = useRouter();
   const [eventList, setEventList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userAuthenticated, setUserAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchUserEvents = async () => {
@@ -30,9 +31,11 @@ export default function ManageEvents() {
 
         if (!currentUser) {
           console.error("No user is currently logged in.");
+          setUserAuthenticated(false);
           return;
         }
 
+        setUserAuthenticated(true);
         const userEmail = currentUser.email;
 
         const eventsQuery = query(
@@ -108,10 +111,12 @@ export default function ManageEvents() {
           <Text style={styles.buttonText}>Post a new event</Text>
         </TouchableOpacity>
         <Text style={styles.subHeadText}>Your hosted events</Text>
-        
-        {/* Show loading indicator */}
+
+        {/* Only render this when user is authenticated and events are loaded */}
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+        ) : !userAuthenticated ? (
+          <Text style={styles.noEventsText}>Please log in to view your events.</Text>
         ) : eventList.length > 0 ? (
           <FlatList
             data={eventList}

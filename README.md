@@ -2,6 +2,8 @@
 
 Tatodo is a community events app designed to connect local businesses, event organizers, and residents. It provides a free platform for businesses to advertise their events while giving locals a centralized place to discover and engage with events in their area! 
 
+Please view my video demonstartion of the app here: https://www.loom.com/share/e5eab9a7abe544f2b6559f050bad1a61?sid=48514bb7-25db-4677-905f-6d118baec108
+
 ## Features
 
 - Event Listings: Businesses and organizers can post events with details like descriptions, dates, and locations.
@@ -22,6 +24,13 @@ Expo: For development, testing, and deployment.
 
 Firebase: For database management and authentication.
 
+To run this app, please ensure you have the following installed: 
+- Node.js (LTS version recommended)
+- Git
+- Expo CLI 
+- Xcode (for iOS Simulator)
+- EAS CLI 
+
 ## Getting Started
 
 To set up Tatodo locally, follow these steps:
@@ -41,11 +50,12 @@ npx expo start
 
 ### 4. Run the App:
 
-Mobile Device: Scan the QR code displayed in your terminal or browser with a smart phone camera. The app will open on your smartphone (requires the Expo Go app).
+Press i to open the app in your ios simulator
 
-iOS Emulator: Press i (requires Xcode).
+or
 
-Android Emulator: Press a (requires Android Studio).
+Scan the QR code to open the app on any ios device
+
 
 ## Contact
 

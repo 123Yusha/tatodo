@@ -6,13 +6,17 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "store"
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "distribution": "store", 
+      "android": {
+        "buildType": "app-bundle"
+      }
     },
     "iospreview": {
       "extends": "development",

@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCalendarsUsageDescription": "This app requires access to your calendar to add events.",
-        "NSRemindersUsageDescription": "This app requires access to your reminders to schedule events."
+        "NSRemindersUsageDescription": "This app requires access to your reminders to schedule events.",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.123yusha.tatodo"
     },
