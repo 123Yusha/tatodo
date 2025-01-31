@@ -7,19 +7,17 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { db } from "../../configs/FirebaseConfig";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import {
-  useRouter,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-} from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function BrowseEvents() {
   const [eventList, setEventList] = useState([]);
+  const [loading, setLoading] = useState(true); // Adding loading state
   const router = useRouter();
 
   const formatDate = (date) => {
@@ -37,7 +35,7 @@ export default function BrowseEvents() {
     return "Invalid date";
   };
 
-  const handlePress = (item ) => {
+  const handlePress = (item) => {
     const { id } = item;
     router.push({
       pathname: "/screens/EventDetails",
@@ -48,11 +46,10 @@ export default function BrowseEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Query to get the two posts, ordered by createdAt in descending order
         const querySnapshot = await getDocs(
           query(
             collection(db, "User Post's"),
-            orderBy("createdAt", "desc") // Order by the createdAt field in descending order
+            orderBy("createdAt", "desc")
           )
         );
         const events = [];
@@ -60,12 +57,16 @@ export default function BrowseEvents() {
           events.push({ id: doc.id, ...doc.data() });
         });
         setEventList(events);
+        setLoading(false); // Set loading to false once data is fetched
       } catch (error) {
         console.error("Error fetching events:", error);
+        setLoading(false); // Ensure loading is false even if there's an error
       }
     };
+
     fetchEvents();
   }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -73,22 +74,32 @@ export default function BrowseEvents() {
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>All events</Text>
         </View>
-        <FlatList
-          data={eventList}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.eventItem}
-            onPress={() => handlePress(item)}>
-              <View style={styles.eventDetails}>
-                <Text style={styles.eventName}>{item.name}</Text>
-                <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
-                <AntDesign name="arrowright" size={24} color="black" />
-              </View>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={styles.listContainer}
-        />
+
+        {/* Show activity indicator while loading */}
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <FlatList
+            data={eventList}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.eventItem}
+                onPress={() => handlePress(item)}
+              >
+                <View style={styles.eventDetails}>
+                  <Text style={styles.eventName}>{item.name}</Text>
+                  <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
+                  <AntDesign name="arrowright" size={24} color="black" />
+                </View>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={styles.listContainer}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -103,19 +114,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 20,
     backgroundColor: "#fff",
-  
   },
   headerText: {
     fontSize: 24,
     fontFamily: "outfit-bold",
     color: "#171616",
     marginVertical: 10,
-    textAlign: "center",
-  },
-  subHeadText: {
-    fontSize: 20,
-    fontFamily: "outfit-bold",
-    marginBottom: 16,
     textAlign: "center",
   },
   eventItem: {
@@ -126,7 +130,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     margin: 10,
     borderRadius: 8,
-    
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -144,13 +147,15 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-regular",
     color: "#555",
   },
-  arrowIcon: {
-    margin: 10, // Space between event details and arrow
-  },
-
   listContainer: {
     paddingVertical: 10,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
 });

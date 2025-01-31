@@ -26,7 +26,6 @@ export default function SignIn() {
 
   const router = useRouter();
   const handleBack = () => {
-    // Use the router to navigate back to the previous screen
     router.back();
   };
 
@@ -66,15 +65,16 @@ export default function SignIn() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled" // Ensures taps outside of input fields dismiss the keyboard
+          contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+          keyboardShouldPersistTaps="handled"
         >
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
@@ -130,8 +130,8 @@ export default function SignIn() {
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -144,21 +144,21 @@ const styles = StyleSheet.create({
   },
   backArrowContainer: {
     position: "absolute",
-    top: 40, // Align with header
-    left: 20, // Ensure space from screen edge
-    zIndex: 1, // Ensure the button is above other elements
-    paddingHorizontal: 10, // Add some padding around the arrow for better touch area
+    top: 40,
+    left: 20,
+    zIndex: 1,
+    paddingHorizontal: 10,
   },
   backArrow: {
     alignItems: "center",
     justifyContent: "center",
   },
   inputContainer: {
-    flex: 1, // Takes the remaining space
-    justifyContent: "center", // Vertically centers the content
-    alignItems: "center", // Horizontally centers the content
-    width: "100%", // Full width of the screen
-    paddingTop: 50, // Additional space from the top
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingTop: 50,
   },
   headerText: {
     fontSize: 24,

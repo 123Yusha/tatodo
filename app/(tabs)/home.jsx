@@ -6,6 +6,7 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import Header from "../components/homescreen/Header";
 import Categories from "../components/homescreen/Categories";
@@ -18,6 +19,7 @@ const { height } = Dimensions.get("window");
 export default function Home() {
   const [categoryList, setCategoryList] = useState([]);
   const [eventList, setEventList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -52,8 +54,12 @@ export default function Home() {
         setEventList(events);
       } catch (error) {
         console.error("Error fetching events:", error);
-      }
+     }
+     finally {
+      setLoading(false); 
+    }
     };
+    
     fetchEvents();
   }, []);
 
@@ -61,10 +67,17 @@ export default function Home() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView contentContainerStyle={styles.container}>
-        {/* ScrollView is wrapping all the content except the FlatList */}
-        <Header />
-        <Categories categoryList={categoryList} />
-        <LatestEvents eventList={eventList} />
+      {loading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <>
+            <Header />
+            <Categories categoryList={categoryList} />
+            <LatestEvents eventList={eventList} />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -74,6 +87,12 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#fff",
-    paddingBottom: 16, // Adding bottom padding to prevent cut-off at the bottom of the screen
+    paddingBottom: 16, 
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: height - 100,
   },
 });

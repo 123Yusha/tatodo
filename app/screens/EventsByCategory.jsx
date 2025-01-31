@@ -6,13 +6,13 @@ import {
   StatusBar,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,  // Import ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   useRouter,
   useGlobalSearchParams,
-  useLocalSearchParams,
 } from "expo-router";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
@@ -21,6 +21,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export default function EventsByCategory() {
   const { categoryName } = useGlobalSearchParams(); // receive event name as a parameter from categories
   const [eventList, setEventList] = useState([]);
+  const [loading, setLoading] = useState(true);  // Set loading state
   const router = useRouter();
 
   const handleBack = () => {
@@ -55,19 +56,19 @@ export default function EventsByCategory() {
         const events = [];
         querySnapshot.forEach((doc) => {
           console.log("ID:", doc.id, "DATA:", doc.data());
-          
           events.push({ id: doc.id, ...doc.data() });
-          
         });
         setEventList(events);
       } catch (error) {
         console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);  // Set loading to false after data is fetched
       }
     };
     fetchEvents();
   }, []);
 
-  const handlePress = (item ) => {
+  const handlePress = (item) => {
     const { id } = item;
     router.push({
       pathname: "/screens/EventDetails",
@@ -90,29 +91,33 @@ export default function EventsByCategory() {
       </View>
       <View style={styles.container}>
         <Text style={styles.headerText}>{categoryName} events</Text>
-        <FlatList
-          data={eventList}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.eventItem}
-              onPress={() => handlePress(item)}
-            >
-              <View style={styles.eventDetails}>
-                <Text style={styles.eventName}>{item.name}</Text>
-                <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
-              </View>
-              <AntDesign name="arrowright" size={24} color="black" />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={styles.listContainer}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyText}>
-              No events found for this category.
-            </Text>
-          )}
-        />
+        {loading ? (  // Show ActivityIndicator during loading
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FlatList
+            data={eventList}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.eventItem}
+                onPress={() => handlePress(item)}
+              >
+                <View style={styles.eventDetails}>
+                  <Text style={styles.eventName}>{item.name}</Text>
+                  <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
+                </View>
+                <AntDesign name="arrowright" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={styles.listContainer}
+            ListEmptyComponent={() => (
+              <Text style={styles.emptyText}>
+                No events found for this category.
+              </Text>
+            )}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

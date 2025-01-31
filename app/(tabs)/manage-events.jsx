@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   useRouter,
-  useGlobalSearchParams,
-  useLocalSearchParams,
 } from "expo-router";
 import { db } from "../../configs/FirebaseConfig";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
@@ -40,7 +39,6 @@ export default function ManageEvents() {
           collection(db, "User Post's"),
           orderBy("createdAt", "desc"),
           where("userEmail", "==", userEmail)
-          
         );
 
         const querySnapshot = await getDocs(eventsQuery);
@@ -88,7 +86,8 @@ export default function ManageEvents() {
       <AntDesign name="arrowright" size={24} color="black" />
     </TouchableOpacity>
   );
-  const handlePress = (item ) => {
+
+  const handlePress = (item) => {
     const { id } = item;
     router.push({
       pathname: "/screens/EventDetailsDelete",
@@ -109,8 +108,10 @@ export default function ManageEvents() {
           <Text style={styles.buttonText}>Post a new event</Text>
         </TouchableOpacity>
         <Text style={styles.subHeadText}>Your hosted events</Text>
+        
+        {/* Show loading indicator */}
         {loading ? (
-          <Text style={styles.loadingText}>Loading...</Text>
+          <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
         ) : eventList.length > 0 ? (
           <FlatList
             data={eventList}
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "outfit-bold",
     marginTop: 20,
-    marginBottom:5,
+    marginBottom: 5,
     textAlign: "center",
   },
   button: {
@@ -172,6 +173,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     fontFamily: "outfit-regular",
+  },
+  loadingIndicator: {
+    marginTop: 20,
   },
   loadingText: {
     textAlign: "center",

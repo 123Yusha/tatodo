@@ -64,8 +64,6 @@ export default function SignUp() {
       return;
     }
 
-    console.log(auth);
-
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
@@ -73,11 +71,11 @@ export default function SignUp() {
         console.log("Account created for:", user);
 
         // Save user details to Firestore
-        const userRef = doc(db, "users", user.uid); // Reference to the user's document
+        const userRef = doc(db, "users", user.uid);
         setDoc(userRef, {
           name: name,
           email: email,
-          isEventOrganizer: isEnabled, // Store the event organizer status
+          isEventOrganizer: isEnabled,
         })
           .then(() => {
             console.log("User details saved to Firestore!");
@@ -107,15 +105,16 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled" // Ensures taps outside of input fields dismiss the keyboard
+          contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+          keyboardShouldPersistTaps="handled"
         >
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
@@ -219,8 +218,8 @@ export default function SignUp() {
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -238,16 +237,16 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     margin: 20,
-    position: "absolute", // Keeps it fixed in place
+    position: "absolute",
     top: 10,
     left: 10,
   },
   inputContainer: {
-    flex: 1, // Takes the remaining space
-    justifyContent: "center", // Vertically centers the content
-    alignItems: "center", // Horizontally centers the content
-    width: "100%", // Full width of the screen
-    paddingTop: 50, // Additional space from the top
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingTop: 50,
   },
 
   headerText: {

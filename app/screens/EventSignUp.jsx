@@ -77,10 +77,7 @@ export default function EventSignUp() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <View style={styles.backArrowContainer}>
@@ -123,7 +120,7 @@ export default function EventSignUp() {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+  
   );
 }
 

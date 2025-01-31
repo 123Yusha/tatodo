@@ -8,22 +8,23 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Calendar from "expo-calendar";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router"; 
 
 export default function EventDetails() {
-  const { id } = useGlobalSearchParams();
+  const { id } = useGlobalSearchParams(); // Get event ID from URL parameters
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const router = useRouter();
+  const router = useRouter(); 
   const [hasSignedUp, setHasSignedUp] = useState(false);
-
+  
   // Used `useFocusEffect` wrapped in `useCallback` to re-fetch event data**
   useFocusEffect(
     useCallback(() => {
@@ -46,32 +47,26 @@ export default function EventDetails() {
       };
 
       fetchEventDetails();
-
-      // Return function for cleanup when unfocused
+      
+     
       return () => {
-        setEventDetails(null); // Clear event details on unfocus (optional)
-        setLoading(true); // Reset loading state
-        setError(null); // Reset error state
+        setEventDetails(null);
+        setLoading(true); 
+        setError(null); 
       };
-    }, [id]) // Dependency array to re-fetch only if the `id` changes
+    }, [id]) 
   );
 
   const handleBack = () => {
-    router.back();
+    router.back(); 
   };
 
   const eventSignUpNav = () => {
     if (!hasSignedUp) {
       setHasSignedUp(true); // Mark as signed up
-      router.push({
-        pathname: "/screens/EventSignUp",
-        params: {
-          id,
-          eventName: eventDetails.name,
-          eventLocation: eventDetails.location,
-        },
-      }); // Navigate to the EventSignUp screen
-    }
+      router.push({ pathname: "/screens/EventSignUp", params: { id, eventName: eventDetails.name, eventLocation: eventDetails.location} }); // Navigate to the EventSignUp screen
+    } 
+   
   };
 
   const formatDate = (date) => {
@@ -91,10 +86,8 @@ export default function EventDetails() {
 
   const addEventToCalendar = async () => {
     try {
-      const { status: calendarStatus } =
-        await Calendar.requestCalendarPermissionsAsync();
-      const { status: remindersStatus } =
-        await Calendar.requestRemindersPermissionsAsync();
+      const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
+      const { status: remindersStatus } = await Calendar.requestRemindersPermissionsAsync();
 
       if (calendarStatus !== "granted" || remindersStatus !== "granted") {
         alert("Both Calendar and Reminders permissions are required.");
@@ -102,18 +95,14 @@ export default function EventDetails() {
       }
 
       const calendars = await Calendar.getCalendarsAsync();
-      const defaultCalendar = calendars.find(
-        (cal) => cal.isPrimary || cal.allowsModifications
-      );
+      const defaultCalendar = calendars.find((cal) => cal.isPrimary || cal.allowsModifications);
 
       if (!defaultCalendar) {
         alert("No suitable calendar found.");
         return;
       }
 
-      const startDate = eventDetails?.date?.toDate
-        ? eventDetails.date.toDate()
-        : new Date();
+      const startDate = eventDetails?.date?.toDate ? eventDetails.date.toDate() : new Date();
       const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1-hour duration
 
       const eventDetailsForCalendar = {
@@ -124,10 +113,7 @@ export default function EventDetails() {
         location: eventDetails.location,
       };
 
-      await Calendar.createEventAsync(
-        defaultCalendar.id,
-        eventDetailsForCalendar
-      );
+      await Calendar.createEventAsync(defaultCalendar.id, eventDetailsForCalendar);
       Alert.alert("Event added!", "Edit your device calendar to modify.", [
         { text: "OK", style: "default" },
       ]);
@@ -138,11 +124,19 @@ export default function EventDetails() {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   if (error) {
-    return <Text>{error}</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>{error}</Text>
+      </View>
+    );
   }
 
   return (
@@ -150,7 +144,11 @@ export default function EventDetails() {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.backArrowContainer}>
         <TouchableOpacity onPress={handleBack}>
-          <Ionicons name="arrow-back" size={35} color="#171616" />
+          <Ionicons
+            name="arrow-back"
+            size={35}
+            color="#171616"
+          />
         </TouchableOpacity>
       </View>
       {eventDetails && (
@@ -166,7 +164,7 @@ export default function EventDetails() {
             Category: {eventDetails.category}
           </Text>
           <Text style={styles.eventCategory}>
-            {(eventDetails.eventSignUps ?? 0) === 1
+            {((eventDetails.eventSignUps ?? 0) === 1)
               ? `Interested: ${eventDetails.eventSignUps ?? 0} person`
               : `Interested: ${eventDetails.eventSignUps ?? 0} people`}
           </Text>
@@ -252,12 +250,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#171616",
     paddingVertical: 15,
-    borderRadius: 18,
+    borderRadius: 18, 
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
-    width: "100%",
-    elevation: 5,
+    width: "100%", 
+    elevation: 5, 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

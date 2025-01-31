@@ -20,7 +20,7 @@ export default function Landing() {
           style={styles.image}
         />
 
-        {/* Text container */}
+        
         <View style={styles.textContainer}>
           <Text style={styles.text}>
             Welcome to <Text style={styles.boldText}>tatodo</Text>!
@@ -28,7 +28,7 @@ export default function Landing() {
           <Text style={styles.text}>Sign in or Sign up to use the app.</Text>
         </View>
 
-        {/* Button container */}
+       
         <View style={styles.buttonContainer}>
           <Link href="/screens/sign-up" asChild>
             <TouchableOpacity style={styles.button} activeOpacity={0.7}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   textContainer: {
-    marginBottom: 40, // Provides spacing between text and buttons
+    marginBottom: 40, 
   },
   text: {
     fontSize: 20,
@@ -68,11 +68,11 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-bold",
   },
   image: {
-    marginBottom: 20, // Space between the image and the text
+    marginBottom: 20,
   },
   buttonContainer: {
     alignItems: "center",
-    width: "100%", // Ensures the buttons take full width
+    width: "100%",
   },
   button: {
     backgroundColor: "#171616",
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20, // Adds spacing between buttons
+    marginBottom: 20, 
     width: "80%",
     elevation: 5,
     shadowColor: "#000",

@@ -9,7 +9,8 @@ import {
   Alert,
   StatusBar,
   KeyboardAvoidingView,
-  Platform
+  Platform, TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -19,6 +20,8 @@ import { addDoc, getDocs, collection, Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
+
+
 
 export default function PostEvent() {
   const router = useRouter();
@@ -83,7 +86,7 @@ export default function PostEvent() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       
@@ -92,6 +95,7 @@ export default function PostEvent() {
         style={styles.container}
         keyboardShouldPersistTaps="handled"
       >
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backArrow}>
             <Ionicons name="arrow-back" size={24} color="black" />
@@ -240,8 +244,9 @@ export default function PostEvent() {
             )}
           </Formik>
         </View>
+        </TouchableWithoutFeedback>
       </ScrollView>
-      
+     
     </SafeAreaView>
     </KeyboardAvoidingView>
     

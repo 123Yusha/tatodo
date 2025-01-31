@@ -7,7 +7,8 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
@@ -47,11 +48,24 @@ export default function EventDetails() {
   }, [id]);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (error) {
-    return <Text>{error}</Text>;
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        <Text style={styles.errorText}>{error}</Text>
+      </SafeAreaView>
+    );
   }
 
   const handleDeleteEvent = async () => {
@@ -97,13 +111,17 @@ export default function EventDetails() {
           <Text style={styles.eventCategory}>
             Category: {eventDetails.category}
           </Text>
+          <Text style={styles.eventCategory}>
+            {((eventDetails.eventSignUps ?? 0) === 1)
+              ? `Interested: ${eventDetails.eventSignUps ?? 0} person`
+              : `Interested: ${eventDetails.eventSignUps ?? 0} people`}
+          </Text>
           <Text style={styles.eventDescription}>
             {eventDetails.description}
           </Text>
           <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={handleDeleteEvent}>
             <Text style={styles.buttonText}>Delete event</Text>
           </TouchableOpacity>
-         
         </ScrollView>
       )}
     </SafeAreaView>
@@ -135,6 +153,23 @@ const styles = StyleSheet.create({
     top: StatusBar.currentHeight || 40, // Adjust for status bar height
     left: 20,
     zIndex: 10, // Ensure it stays above other components
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#171616",
+  },
+  errorText: {
+    fontSize: 18,
+    color: "red",
+    textAlign: "center",
+    marginTop: 20,
   },
   eventDetails: {
     flex: 1,
