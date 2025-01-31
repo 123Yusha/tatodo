@@ -23,7 +23,7 @@ export default function Landing() {
         
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Welcome to <Text style={styles.boldText}>tatodo</Text>!
+            Welcome to <Text style={styles.boldText}>TAtodo</Text>!
           </Text>
           <Text style={styles.text}>Sign in or Sign up to use the app.</Text>
         </View>

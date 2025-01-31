@@ -11,21 +11,29 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Calendar from "expo-calendar";
-import { useFocusEffect } from "expo-router"; 
+import { useFocusEffect } from "expo-router";
+import { auth } from "../../configs/FirebaseConfig";
 
 export default function EventDetails() {
-  const { id } = useGlobalSearchParams(); // Get event ID from URL parameters
+  const { id } = useGlobalSearchParams();
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const router = useRouter(); 
+  const router = useRouter();
   const [hasSignedUp, setHasSignedUp] = useState(false);
-  
-  // Used `useFocusEffect` wrapped in `useCallback` to re-fetch event data**
+
   useFocusEffect(
     useCallback(() => {
       const fetchEventDetails = async () => {
@@ -36,6 +44,14 @@ export default function EventDetails() {
 
           if (docSnap.exists()) {
             setEventDetails(docSnap.data()); // Set event data
+            const user = auth.currentUser;
+            if (user) {
+              const signUpRef = collection(db, "User Post's", id, "signups");
+              const q = query(signUpRef, where("userEmail", "==", user.email)); // Query by userEmail
+              const querySnapshot = await getDocs(q);
+
+              setHasSignedUp(!querySnapshot.empty); // Persisted across navigation
+            }
           } else {
             setError("Event not found.");
           }
@@ -47,26 +63,39 @@ export default function EventDetails() {
       };
 
       fetchEventDetails();
-      
-     
+
       return () => {
         setEventDetails(null);
-        setLoading(true); 
-        setError(null); 
+        setLoading(true);
+        setError(null);
       };
-    }, [id]) 
+    }, [id])
   );
 
   const handleBack = () => {
-    router.back(); 
+    router.back();
   };
 
-  const eventSignUpNav = () => {
+  const eventSignUpNav = async () => {
     if (!hasSignedUp) {
-      setHasSignedUp(true); // Mark as signed up
-      router.push({ pathname: "/screens/EventSignUp", params: { id, eventName: eventDetails.name, eventLocation: eventDetails.location} }); // Navigate to the EventSignUp screen
-    } 
-   
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          alert("Please sign in first.");
+          return;
+        }
+
+        // Store the sign-up in Firestore using userEmail
+        const signUpRef = doc(db, "User Post's", id, "signups", user.email); // Use email as document ID
+        await setDoc(signUpRef, { userEmail: user.email, timestamp: new Date() });
+
+        setHasSignedUp(true); // Now persists even after navigating away
+        router.push({ pathname: "/screens/EventSignUp", params: { id, eventName: eventDetails.name, eventLocation: eventDetails.location } });
+      } catch (error) {
+        console.error("Error signing up:", error);
+        alert("Failed to sign up.");
+      }
+    }
   };
 
   const formatDate = (date) => {
@@ -86,8 +115,10 @@ export default function EventDetails() {
 
   const addEventToCalendar = async () => {
     try {
-      const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
-      const { status: remindersStatus } = await Calendar.requestRemindersPermissionsAsync();
+      const { status: calendarStatus } =
+        await Calendar.requestCalendarPermissionsAsync();
+      const { status: remindersStatus } =
+        await Calendar.requestRemindersPermissionsAsync();
 
       if (calendarStatus !== "granted" || remindersStatus !== "granted") {
         alert("Both Calendar and Reminders permissions are required.");
@@ -95,14 +126,18 @@ export default function EventDetails() {
       }
 
       const calendars = await Calendar.getCalendarsAsync();
-      const defaultCalendar = calendars.find((cal) => cal.isPrimary || cal.allowsModifications);
+      const defaultCalendar = calendars.find(
+        (cal) => cal.isPrimary || cal.allowsModifications
+      );
 
       if (!defaultCalendar) {
         alert("No suitable calendar found.");
         return;
       }
 
-      const startDate = eventDetails?.date?.toDate ? eventDetails.date.toDate() : new Date();
+      const startDate = eventDetails?.date?.toDate
+        ? eventDetails.date.toDate()
+        : new Date();
       const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1-hour duration
 
       const eventDetailsForCalendar = {
@@ -113,7 +148,10 @@ export default function EventDetails() {
         location: eventDetails.location,
       };
 
-      await Calendar.createEventAsync(defaultCalendar.id, eventDetailsForCalendar);
+      await Calendar.createEventAsync(
+        defaultCalendar.id,
+        eventDetailsForCalendar
+      );
       Alert.alert("Event added!", "Edit your device calendar to modify.", [
         { text: "OK", style: "default" },
       ]);
@@ -144,11 +182,7 @@ export default function EventDetails() {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.backArrowContainer}>
         <TouchableOpacity onPress={handleBack}>
-          <Ionicons
-            name="arrow-back"
-            size={35}
-            color="#171616"
-          />
+          <Ionicons name="arrow-back" size={35} color="#171616" />
         </TouchableOpacity>
       </View>
       {eventDetails && (
@@ -164,7 +198,7 @@ export default function EventDetails() {
             Category: {eventDetails.category}
           </Text>
           <Text style={styles.eventCategory}>
-            {((eventDetails.eventSignUps ?? 0) === 1)
+            {(eventDetails.eventSignUps ?? 0) === 1
               ? `Interested: ${eventDetails.eventSignUps ?? 0} person`
               : `Interested: ${eventDetails.eventSignUps ?? 0} people`}
           </Text>
@@ -250,12 +284,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#171616",
     paddingVertical: 15,
-    borderRadius: 18, 
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
-    width: "100%", 
-    elevation: 5, 
+    width: "100%",
+    elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

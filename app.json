@@ -17,15 +17,15 @@
       "bundleIdentifier": "com.123yusha.tatodo"
     },
     "android": {
-      
+      "permissions": [
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/tatodo-landing.png",
-        "backgroundColor": "#ffffff",
-        "permissions": [
-          "READ_CALENDAR",
-          "WRITE_CALENDAR"
-        ]
-      }
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yusha123.tatodo"
     },
     "web": {
       "bundler": "metro",

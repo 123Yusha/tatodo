@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   },
   backArrowContainer: {
     position: "absolute",
-    top: StatusBar.currentHeight || 40, // Adjust for status bar height
+    top: StatusBar.currentHeight || 40, 
     left: 20,
-    zIndex: 10, // Ensure it stays above other components
+    zIndex: 10, 
   },
 });
