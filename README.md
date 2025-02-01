@@ -1,16 +1,16 @@
 # Tatodo
 
-Tatodo is a community events app designed to connect local businesses, event organizers, and residents. It provides a free platform for businesses to advertise their events while giving locals a centralized place to discover and engage with events in their area! 
+Tatodo is a community events app designed to connect local businesses, event organizers, and residents. It provides a free platform for businesses to advertise their events while giving locals a centralized place to discover and engage with events in their area!
 
-Please view my video demonstartion of the app here: https://www.loom.com/share/e5eab9a7abe544f2b6559f050bad1a61?sid=48514bb7-25db-4677-905f-6d118baec108
+Please view my video demonstration of the app here: https://www.loom.com/share/e5eab9a7abe544f2b6559f050bad1a61?sid=48514bb7-25db-4677-905f-6d118baec108
 
 ## Features
 
 - Event Listings: Businesses and organizers can post events with details like descriptions, dates, and locations.
 
-- User Interaction: Users can sign up, view event details, and register interest.
+- User Interaction: Users can sign up, sign out, view event details, and register interest.
 
-- Calendar Integration: Add events directly to your phone calendar.
+- Calendar Integration: Add events directly to your device calendar.
 
 - Diverse Categories: Discover events spanning sports, arts, nightlife, and family-friendly activities.
 
@@ -18,18 +18,17 @@ Please view my video demonstartion of the app here: https://www.loom.com/share/e
 
 ## Tech Stack
 
-React Native: For building the mobile app.
-
-Expo: For development, testing, and deployment.
+React Native and Expo: For development, testing, and deployment.
 
 Firebase: For database management and authentication.
 
-To run this app, please ensure you have the following installed: 
+To run this app, please ensure you have the following installed:
+
 - Node.js (LTS version recommended)
 - Git
-- Expo CLI 
+- Expo CLI
 - Xcode (for iOS Simulator)
-- EAS CLI 
+- EAS CLI
 
 ## Getting Started
 
@@ -44,18 +43,41 @@ cd tatodo
 
 npm install
 
-### 3. Start the Development Server:
+## Running TAtodo on your device
 
-npx expo start
+To run the Tatodo app on an emulator or real device, you need to install the Development Build directly on your emulator or device.
 
-### 4. Run the App:
+### For Android:
 
-Press i to open the app in your ios simulator
+    1.Download the .apk file from the provided link: *my apk*
 
-or
+    2.Install the .apk on an Android emulator or a physical Android device by running: 
+    
+    adb install path/to/*my apk*
+    
+    (Ensure ADB is installed and your device/emulator is running.)
+    
+    3.Open the app from the home screen.
 
-Scan the QR code to open the app on any ios device
+### For iOS (Mac Users Only, with Xcode Installed):
 
+    1.Download the .ipa file from the provided link: *insert build link here*
+
+    2.Install it using Xcode or Apple Configurator.
+
+        - Using Xcode:
+
+        Open Xcode → Devices & Simulators
+        Select your iPhone/emulator
+        Drag and drop the .ipa file into the installed apps list
+
+        - Using Apple Configurator:
+
+        Connect your device
+        Use Apple Configurator to sideload the .ipa file
+        
+### Run the App
+        Once installed, open the app from the home screen on your emulator or real device.
 
 ## Contact
 
