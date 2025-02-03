@@ -27,8 +27,8 @@ To run this app, please ensure you have the following installed:
 - Node.js (LTS version recommended)
 - Git
 - Expo CLI
-- Xcode (for iOS Simulator)
-- EAS CLI
+- Xcode (for iOS Simulator/Device)
+- Android Studio (if using Android Emulator/Device)
 
 ## Getting Started
 
@@ -45,15 +45,17 @@ npm install
 
 ## Running TAtodo on your device
 
-To run the Tatodo app on an emulator or real device, you need to install the Development Build directly on your emulator or device.
+TAtodo is hosted on Expo EAS. To run the Tatodo app on an emulator or real device, you need to install the Development Build directly on your emulator or device.
 
 ### For Android:
 
-    1.Download the .apk file from the provided link: *my apk*
+ Reference docs: *https://docs.expo.dev/tutorial/eas/android-development-build/*
+
+    1.Download the .apk file from the provided link: https://expo.dev/artifacts/eas/m5Fu5k9A18HTgfQaJveBmT.apk
 
     2.Install the .apk on an Android emulator or a physical Android device by running: 
     
-    adb install path/to/*my apk*
+    adb install path/to/application-a29e14c8-b5a4-4ff4-9ca0-e8c9d8fe33ff.apk
     
     (Ensure ADB is installed and your device/emulator is running.)
     
@@ -61,7 +63,9 @@ To run the Tatodo app on an emulator or real device, you need to install the Dev
 
 ### For iOS (Mac Users Only, with Xcode Installed):
 
-    1.Download the .ipa file from the provided link: *insert build link here*
+Reference docs: *https://docs.expo.dev/tutorial/eas/ios-development-build-for-simulators/*
+
+    1. Using the following .ipa file: application-9563cc57-e498-47a2-b9bb-5a245bd1e33f.ipa
 
     2.Install it using Xcode or Apple Configurator.
 
@@ -77,7 +81,7 @@ To run the Tatodo app on an emulator or real device, you need to install the Dev
         Use Apple Configurator to sideload the .ipa file
         
 ### Run the App
-        Once installed, open the app from the home screen on your emulator or real device.
+        Once installed, open the app from the home screen on your emulator or real device by following the instructions in your terminal Alternatively, download and select your device from Expo Orbit to run the app. 
 
 ## Contact
 
