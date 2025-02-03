@@ -26,9 +26,10 @@ To run this app, please ensure you have the following installed:
 
 - Node.js (LTS version recommended)
 - Git
-- Expo CLI
+- An Expo Account
 - Xcode (for iOS Simulator/Device)
 - Android Studio (if using Android Emulator/Device)
+- Temporary account admins for the Expo account used for the build can be added upon request.
 
 ## Getting Started
 

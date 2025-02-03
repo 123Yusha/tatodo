@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import {
@@ -115,31 +116,35 @@ export default function EventDetails() {
 
   const addEventToCalendar = async () => {
     try {
-      const { status: calendarStatus } =
-        await Calendar.requestCalendarPermissionsAsync();
-      const { status: remindersStatus } =
-        await Calendar.requestRemindersPermissionsAsync();
-
+      const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
+      let remindersStatus = 'granted';
+  
+      // Request reminders permissions only on iOS
+      if (Platform.OS === 'ios') {
+        const { status: reminderPermission } = await Calendar.requestRemindersPermissionsAsync();
+        remindersStatus = reminderPermission;
+      }
+  
       if (calendarStatus !== "granted" || remindersStatus !== "granted") {
         alert("Both Calendar and Reminders permissions are required.");
         return;
       }
-
+  
       const calendars = await Calendar.getCalendarsAsync();
       const defaultCalendar = calendars.find(
         (cal) => cal.isPrimary || cal.allowsModifications
       );
-
+  
       if (!defaultCalendar) {
         alert("No suitable calendar found.");
         return;
       }
-
+  
       const startDate = eventDetails?.date?.toDate
         ? eventDetails.date.toDate()
         : new Date();
       const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1-hour duration
-
+  
       const eventDetailsForCalendar = {
         title: eventDetails.name,
         startDate,
@@ -147,11 +152,8 @@ export default function EventDetails() {
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Adjust to your timezone
         location: eventDetails.location,
       };
-
-      await Calendar.createEventAsync(
-        defaultCalendar.id,
-        eventDetailsForCalendar
-      );
+  
+      await Calendar.createEventAsync(defaultCalendar.id, eventDetailsForCalendar);
       Alert.alert("Event added!", "Edit your device calendar to modify.", [
         { text: "OK", style: "default" },
       ]);
@@ -160,6 +162,7 @@ export default function EventDetails() {
       alert("Failed to add event to calendar.");
     }
   };
+  
 
   if (loading) {
     return (
