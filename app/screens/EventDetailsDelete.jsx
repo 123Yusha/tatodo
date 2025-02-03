@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
@@ -150,10 +151,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: Platform.OS === "android" ? 50 : 0, // Add space for the status bar and header on Android
   },
   backArrowContainer: {
     position: "absolute",
-    top: StatusBar.currentHeight || 40, // Adjust for status bar height
+    top: Platform.OS === "android" ? 20 : StatusBar.currentHeight || 40, // Adjust based on platform
     left: 20,
     zIndex: 10, // Ensure it stays above other components
   },
@@ -178,6 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     padding: 20,
+    paddingTop: Platform.OS === "android" ? 70 : 20, // Adjust padding for Android to prevent overlap
   },
   eventName: {
     fontSize: 24,
@@ -226,4 +229,3 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
-

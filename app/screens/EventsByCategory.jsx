@@ -53,6 +53,7 @@ export default function EventsByCategory() {
             orderBy("createdAt", "desc")
           )
         );
+
         const events = [];
         querySnapshot.forEach((doc) => {
           console.log("ID:", doc.id, "DATA:", doc.data());
@@ -93,14 +94,16 @@ export default function EventsByCategory() {
         <Text style={styles.headerText}>{categoryName} events</Text>
         {loading ? (  // Show ActivityIndicator during loading
           <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
+        ) :   (
           <FlatList
+          
             data={eventList}
             renderItem={({ item }) => (
+              
               <TouchableOpacity
                 style={styles.eventItem}
                 onPress={() => handlePress(item)}
-              >
+              > 
                 <View style={styles.eventDetails}>
                   <Text style={styles.eventName}>{item.name}</Text>
                   <Text style={styles.eventDate}>{formatDate(item.date)}</Text>
@@ -127,6 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: 60, // Add padding to push content below back arrow
   },
   backArrowContainer: {
     position: "absolute",
@@ -173,8 +177,9 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     backgroundColor: "#fff",
+    minHeight: '100%', // Ensure list takes full screen height
   },
   emptyText: {
     textAlign: "center",
