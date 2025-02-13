@@ -20,6 +20,7 @@ import {
   where,
   getDocs,
   setDoc,
+  setLogLevel
 } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -34,20 +35,26 @@ export default function EventDetails() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const [hasSignedUp, setHasSignedUp] = useState(false);
+  const user = auth.currentUser;
+  
+  console.log("Event ID:", id);
 
   useFocusEffect(
+    
     useCallback(() => {
+      
       const fetchEventDetails = async () => {
         setLoading(true);
         try {
-          const docRef = doc(db, "User Post's", id);
+          const docRef = doc(db, "UserPosts", id);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
             setEventDetails(docSnap.data()); // Set event data
-            const user = auth.currentUser;
+            
+            
             if (user) {
-              const signUpRef = collection(db, "User Post's", id, "signups");
+              const signUpRef = collection(db, "UserPosts", id, "signups");
               const q = query(signUpRef, where("userEmail", "==", user.email)); // Query by userEmail
               const querySnapshot = await getDocs(q);
 
@@ -57,6 +64,7 @@ export default function EventDetails() {
             setError("Event not found.");
           }
         } catch (err) {
+          console.error("Error fetching event details:", err)
           setError("Error fetching event details.");
         } finally {
           setLoading(false);
@@ -64,6 +72,10 @@ export default function EventDetails() {
       };
 
       fetchEventDetails();
+
+     
+
+
 
       return () => {
         setEventDetails(null);
@@ -80,14 +92,15 @@ export default function EventDetails() {
   const eventSignUpNav = async () => {
     if (!hasSignedUp) {
       try {
-        const user = auth.currentUser;
+        
+        
         if (!user) {
           alert("Please sign in first.");
           return;
         }
 
         // Store the sign-up in Firestore using userEmail
-        const signUpRef = doc(db, "User Post's", id, "signups", user.email); // Use email as document ID
+        const signUpRef = doc(db, "UserPosts", id, "signups", user.email); // Use email as document ID
         await setDoc(signUpRef, { userEmail: user.email, timestamp: new Date() });
 
         setHasSignedUp(true); // Now persists even after navigating away
@@ -180,6 +193,8 @@ export default function EventDetails() {
     );
   }
 
+ 
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -210,24 +225,36 @@ export default function EventDetails() {
             {eventDetails.description}
           </Text>
 
-          <TouchableOpacity
-            style={[styles.button, hasSignedUp && styles.buttonDisabled]} // Change style if already signed up
-            activeOpacity={0.7}
-            onPress={eventSignUpNav}
-            disabled={hasSignedUp} // Disable button after signing up
-          >
-            <Text style={styles.buttonText}>
-              {hasSignedUp ? "You've signed up!" : "Sign up"}
-            </Text>
-          </TouchableOpacity>
+          {user ? (
+  <>
+    <TouchableOpacity
+      style={[styles.button, hasSignedUp && styles.buttonDisabled]}
+      activeOpacity={0.7}
+      onPress={eventSignUpNav}
+      disabled={hasSignedUp}
+    >
+      <Text style={styles.buttonText}>
+        {hasSignedUp ? "You've signed up!" : "Sign up"}
+      </Text>
+    </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            activeOpacity={0.7}
-            onPress={addEventToCalendar}
-          >
-            <Text style={styles.buttonText}>Add to calendar</Text>
-          </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.button}
+      activeOpacity={0.7}
+      onPress={addEventToCalendar}
+    >
+      <Text style={styles.buttonText}>Add to calendar</Text>
+    </TouchableOpacity>
+  </>
+) : (
+  <View style={styles.inputContainer}>
+    <TouchableOpacity onPress={() => router.push("/screens/sign-in")} >
+    <Text style={styles.linkText}>
+      Sign in or sign up to use features such as event sign-ups and calendar integration!
+    </Text>
+    </TouchableOpacity>
+  </View>
+)}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -245,6 +272,7 @@ const styles = StyleSheet.create({
     top: Platform.OS === "android" ? 20 : StatusBar.currentHeight || 40, // Adjust based on platform
     left: 20,
     zIndex: 10, // Ensure the back button stays above other elements
+  
   },
   eventDetails: {
     flex: 1,
@@ -256,6 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "outfit-bold",
     marginBottom: 10,
+    marginTop:20,
   },
   eventCategory: {
     fontSize: 18,
@@ -308,5 +337,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50", // Change the color to indicate disabled
     fontSize: 18,
     color: "#fff",
+  },
+  linkText: {
+    fontSize: 16,
+    color: "#171616",
+    fontFamily: "outfit-regular",
+    textDecorationLine: "underline",
+    alignItems: "center",
+    marginTop: 10
+  },
+  inputContainer: {
+    alignItems: "center",
+    margin: 10,
   },
 });

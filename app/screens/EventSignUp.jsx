@@ -28,7 +28,7 @@ export default function EventSignUp() {
     // Fetch current sign-ups
     const fetchEventData = async () => {
       try {
-        const eventRef = doc(db, "User Post's", id);
+        const eventRef = doc(db, "UserPosts", id);
         const eventSnap = await getDoc(eventRef);
         if (eventSnap.exists()) {
           const eventData = eventSnap.data();
@@ -47,7 +47,7 @@ export default function EventSignUp() {
     setLoading(true);
 
     try {
-      const eventRef = doc(db, "User Post's", id);
+      const eventRef = doc(db, "UserPosts", id);
       const eventSnap = await getDoc(eventRef);
 
       if (eventSnap.exists()) {

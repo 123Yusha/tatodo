@@ -48,7 +48,7 @@ export default function EventsByCategory() {
       try {
         const querySnapshot = await getDocs(
           query(
-            collection(db, "User Post's"),
+            collection(db, "UserPosts"),
             where("category", "==", categoryName),
             orderBy("createdAt", "desc")
           )

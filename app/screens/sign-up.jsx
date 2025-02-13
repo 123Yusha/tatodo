@@ -80,6 +80,7 @@ export default function SignUp() {
           .then(() => {
             console.log("User details saved to Firestore!");
             Alert.alert("Registration complete!", "Welcome to Tatodo");
+            router.replace("/(tabs)/home");
           })
           .catch((error) => {
             console.error("Error saving user details: ", error);

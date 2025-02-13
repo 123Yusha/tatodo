@@ -1,10 +1,30 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from "react-native";
-import React from "react";
-import { signOut } from "firebase/auth";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  StatusBar,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { signOut, deleteUser, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { auth } from "../../configs/FirebaseConfig";
+import { auth, db } from "../../configs/FirebaseConfig";
+import { deleteDoc, doc } from "firebase/firestore";
 
 export default function MyAccount() {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = () => {
     signOut(auth).then(() => {
@@ -13,18 +33,63 @@ export default function MyAccount() {
     });
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Delete account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "OK",
+          onPress: async () => {
+            if (user) {
+              try {
+                await deleteDoc(doc(db, "users", user.uid)); // delete firestore data
+                await deleteUser(user); // delete auth user account
+                console.log("User deleted successfully");
+                router.push("/(tabs)/home");
+              } catch (error) {
+                console.error("Error deleting user:", error);
+                Alert.alert(
+                  "Error",
+                  "Could not delete account. Please log in again and try."
+                );
+              }
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }} backgroundColor="#fff">
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-         <ScrollView
-              style={styles.scrollContainer}
-              contentContainerStyle={styles.container}
-            >
-       <Text style={styles.headerText}>My account</Text>
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Log out</Text>
-        </TouchableOpacity>
-        </ScrollView>
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.container}
+      >
+        <Text style={styles.headerText}>My account</Text>
+
+        {user ? (
+          <>
+            <TouchableOpacity style={styles.button} onPress={handleLogout}>
+              <Text style={styles.buttonText}>Log out</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
+              <Text style={styles.buttonText}>Delete account</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={() => router.push("/screens/sign-in")}>
+          <Text style={styles.linkText}>
+            Sign in or sign up to use the full app features!
+          </Text>
+          </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -37,8 +102,8 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 10,
-    alignItems: "center", // Horizontally center content inside the scroll view
-    flexGrow: 1, // Ensures the content takes up available space
+    alignItems: "center",
+    flexGrow: 1,
   },
   headerText: {
     fontSize: 24,
@@ -66,5 +131,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     fontFamily: "outfit-regular",
+  },
+  infoText: {
+    fontSize: 18,
+    color: "#555",
+    fontFamily: "outfit-regular",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  linkText: {
+    fontSize: 16,
+    color: "#171616",
+    fontFamily: "outfit-regular",
+    textDecorationLine: "underline",
+    alignItems: "center",
+    marginTop: 10
+  },
+  inputContainer: {
+    alignItems: "center",
+    margin: 10,
   },
 });

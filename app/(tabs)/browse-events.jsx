@@ -48,7 +48,7 @@ export default function BrowseEvents() {
       try {
         const querySnapshot = await getDocs(
           query(
-            collection(db, "User Post's"),
+            collection(db, "UserPosts"),
             orderBy("createdAt", "desc")
           )
         );

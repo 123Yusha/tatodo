@@ -30,7 +30,7 @@ export default function EventDetails() {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const docRef = doc(db, "User Post's", id);
+        const docRef = doc(db, "UserPosts", id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {

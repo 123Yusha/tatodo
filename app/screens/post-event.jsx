@@ -63,7 +63,7 @@ export default function PostEvent() {
       const formattedDate = Timestamp.fromDate(new Date(values.date));
 
       // Add event document to Firestore, including user's email
-      const docRef = await addDoc(collection(db, "User Post's"), {
+      const docRef = await addDoc(collection(db, "UserPosts"), {
         name: values.name,
         date: formattedDate,
         description: values.description,

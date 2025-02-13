@@ -1,9 +1,8 @@
 import { Stack, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
-import {auth} from "../configs/FirebaseConfig";
+import { auth } from "../configs/FirebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
 
 export default function RootLayout() {
   useFonts({
@@ -12,24 +11,23 @@ export default function RootLayout() {
   });
 
   const router = useRouter();
+  const [userChecked, setUserChecked] = useState(false);
 
   useEffect(() => {
-    // Set up Firebase authentication listener
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Navigate to the (tabs) layout if the user is authenticated
-        router.replace("/home");
-      } else {
-        // Navigate to the login or landing page if not authenticated
-        router.replace("/"); // Replace with your login route
-      }
+      // Set a state to mark when the user has been checked
+      setUserChecked(true);
     });
 
-    // Cleanup the listener on component unmount
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
-  
+  useEffect(() => {
+    if (userChecked) {
+      // Always navigate to home tab once user check is complete
+      router.replace("/home");
+    }
+  }, [userChecked, router]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, Link, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../../configs/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "expo-router";
 
 export default function Header() {
   const [username, setUserName] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,10 +25,15 @@ export default function Header() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Welcome to TAtodo, {username}!</Text>
+      <Text style={styles.headerText}>{`Welcome to TAtodo${username ? `, ${username}` : ""}!`}</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Discover what's happening in your community! Explore events near you, register your interest, and even add them to your calendar. Hosting an event? Spread the word- all for free!</Text>
-      </View>
+        { username ? (
+        <Text style={styles.inputText}>Discover what's happening in your community! Explore events near you, register your interest, and even add them to your calendar. Hosting an event? Spread the word- all for free!</Text> ) : (<TouchableOpacity onPress={() => router.push("/screens/sign-in")}>
+        <Text style={styles.linkText}>Sign in or sign up to use the full app features!</Text>
+      </TouchableOpacity>)
+      
+        }
+        </View>
     </View>
   );
 }
@@ -54,17 +61,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 15,
   },
-  inputBox: {
-    width: "90%", // Take most of the screen width
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+
+  linkText: {
     fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#171616",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2, // For Android shadow
+    color: "#171616",
+    fontFamily: "outfit-regular",
+    textDecorationLine: "underline",
+    alignItems: "center",
+    marginTop: 10
   },
 });

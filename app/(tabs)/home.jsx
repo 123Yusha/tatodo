@@ -42,7 +42,7 @@ export default function Home() {
       try {
         const querySnapshot = await getDocs(
           query(
-            collection(db, "User Post's"),
+            collection(db, "UserPosts"),
             orderBy("createdAt", "desc"),
             limit(3)
           )

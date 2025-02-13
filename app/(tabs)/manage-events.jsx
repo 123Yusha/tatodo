@@ -39,7 +39,7 @@ export default function ManageEvents() {
         const userEmail = currentUser.email;
 
         const eventsQuery = query(
-          collection(db, "User Post's"),
+          collection(db, "UserPosts"),
           orderBy("createdAt", "desc"),
           where("userEmail", "==", userEmail)
         );

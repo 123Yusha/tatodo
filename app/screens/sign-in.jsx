@@ -12,6 +12,7 @@ import {
   Keyboard,
   Alert,
   StatusBar,
+  
 } from "react-native";
 import { React, useState } from "react";
 import { Link } from "expo-router";
@@ -46,7 +47,8 @@ export default function SignIn() {
         // Signed in
         const user = userCredential.user;
         console.log("Signed in as:", user);
-        // ...
+        router.replace("/(tabs)/home");
+        
       })
       .catch((error) => {
         const errorCode = error.code;
