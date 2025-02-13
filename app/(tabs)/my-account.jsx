@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import { auth, db } from "../../configs/FirebaseConfig";
 import { deleteDoc, doc } from "firebase/firestore";
 
+
 export default function MyAccount() {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -29,7 +30,7 @@ export default function MyAccount() {
   const handleLogout = () => {
     signOut(auth).then(() => {
       console.log("User logged out");
-      router.replace("/"); // Redirect to the landing page or login screen
+      router.replace("/(tabs)/home");
     });
   };
 
@@ -47,7 +48,7 @@ export default function MyAccount() {
                 await deleteDoc(doc(db, "users", user.uid)); // delete firestore data
                 await deleteUser(user); // delete auth user account
                 console.log("User deleted successfully");
-                router.push("/(tabs)/home");
+                router.replace("/(tabs)/home");
               } catch (error) {
                 console.error("Error deleting user:", error);
                 Alert.alert(

@@ -24,8 +24,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (userChecked) {
-      // Always navigate to home tab once user check is complete
-      router.replace("/home");
+      
+      router.replace("/(tabs)/home");
     }
   }, [userChecked, router]);
 

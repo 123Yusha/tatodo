@@ -47,7 +47,7 @@ export default function SignIn() {
         // Signed in
         const user = userCredential.user;
         console.log("Signed in as:", user);
-        router.replace("/(tabs)/home");
+        router.replace("/home");
         
       })
       .catch((error) => {

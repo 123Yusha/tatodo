@@ -1,10 +1,11 @@
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet,Text } from "react-native";
 import Landing from "./screens/Landing";
+import Home from "./(tabs)/home";
 
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <Landing />
+      <Text> Welcome! </Text>
     </SafeAreaView>
   );
 }

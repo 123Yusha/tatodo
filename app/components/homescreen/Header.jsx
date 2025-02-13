@@ -4,6 +4,7 @@ import { auth, db } from "../../../configs/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 
+
 export default function Header() {
   const [username, setUserName] = useState("");
   const router = useRouter();
@@ -25,7 +26,8 @@ export default function Header() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{`Welcome to TAtodo${username ? `, ${username}` : ""}!`}</Text>
+      { username ? (<Text style={styles.headerText}>Welcome to TAtodo, {username}</Text>) : (<Text style={styles.headerText}> Welcome to TAtodo!</Text>) }
+  
       <View style={styles.inputContainer}>
         { username ? (
         <Text style={styles.inputText}>Discover what's happening in your community! Explore events near you, register your interest, and even add them to your calendar. Hosting an event? Spread the word- all for free!</Text> ) : (<TouchableOpacity onPress={() => router.push("/screens/sign-in")}>
