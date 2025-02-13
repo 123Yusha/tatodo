@@ -15,10 +15,13 @@
         "NSRemindersUsageDescription": "This app requires access to your reminders to schedule events.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.123yusha.tatodo"
+      "bundleIdentifier": "com.123yusha.tatodo",
+      "runtimeVersion": "1.0.0"
     },
     "android": {
       "permissions": [
+        "READ_CALENDAR",
+        "WRITE_CALENDAR",
         "READ_CALENDAR",
         "WRITE_CALENDAR"
       ],
@@ -26,7 +29,10 @@
         "foregroundImage": "./assets/images/tatodo-landing.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yusha123.tatodo"
+      "package": "com.yusha123.tatodo",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -56,6 +62,9 @@
         "projectId": "60aeb724-8373-4d5e-89e7-2252a8e99c2e"
       }
     },
-    "owner": "123yusha"
+    "owner": "123yusha",
+    "updates": {
+      "url": "https://u.expo.dev/60aeb724-8373-4d5e-89e7-2252a8e99c2e"
+    }
   }
 }
