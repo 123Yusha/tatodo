@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Linking,
 } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import {
@@ -20,7 +21,7 @@ import {
   where,
   getDocs,
   setDoc,
-  setLogLevel
+  setLogLevel,
 } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -36,13 +37,9 @@ export default function EventDetails() {
   const router = useRouter();
   const [hasSignedUp, setHasSignedUp] = useState(false);
   const user = auth.currentUser;
-  
-  console.log("Event ID:", id);
 
   useFocusEffect(
-    
     useCallback(() => {
-      
       const fetchEventDetails = async () => {
         setLoading(true);
         try {
@@ -51,8 +48,7 @@ export default function EventDetails() {
 
           if (docSnap.exists()) {
             setEventDetails(docSnap.data()); // Set event data
-            
-            
+
             if (user) {
               const signUpRef = collection(db, "UserPosts", id, "signups");
               const q = query(signUpRef, where("userEmail", "==", user.email)); // Query by userEmail
@@ -64,7 +60,7 @@ export default function EventDetails() {
             setError("Event not found.");
           }
         } catch (err) {
-          console.error("Error fetching event details:", err)
+          console.error("Error fetching event details:", err);
           setError("Error fetching event details.");
         } finally {
           setLoading(false);
@@ -72,10 +68,6 @@ export default function EventDetails() {
       };
 
       fetchEventDetails();
-
-     
-
-
 
       return () => {
         setEventDetails(null);
@@ -92,8 +84,6 @@ export default function EventDetails() {
   const eventSignUpNav = async () => {
     if (!hasSignedUp) {
       try {
-        
-        
         if (!user) {
           alert("Please sign in first.");
           return;
@@ -101,10 +91,20 @@ export default function EventDetails() {
 
         // Store the sign-up in Firestore using userEmail
         const signUpRef = doc(db, "UserPosts", id, "signups", user.email); // Use email as document ID
-        await setDoc(signUpRef, { userEmail: user.email, timestamp: new Date() });
+        await setDoc(signUpRef, {
+          userEmail: user.email,
+          timestamp: new Date(),
+        });
 
         setHasSignedUp(true); // Now persists even after navigating away
-        router.push({ pathname: "/screens/EventSignUp", params: { id, eventName: eventDetails.name, eventLocation: eventDetails.location } });
+        router.push({
+          pathname: "/screens/EventSignUp",
+          params: {
+            id,
+            eventName: eventDetails.name,
+            eventLocation: eventDetails.location,
+          },
+        });
       } catch (error) {
         console.error("Error signing up:", error);
         alert("Failed to sign up.");
@@ -129,44 +129,56 @@ export default function EventDetails() {
 
   const addEventToCalendar = async () => {
     try {
-      const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
-      let remindersStatus = 'granted';
-  
+      console.log("Requesting calendar permissions...");
+      const { status: calendarStatus } =
+        await Calendar.requestCalendarPermissionsAsync();
+      console.log("Calendar permission status:", calendarStatus);
+      let remindersStatus = "granted";
+
       // Request reminders permissions only on iOS
-      if (Platform.OS === 'ios') {
-        const { status: reminderPermission } = await Calendar.requestRemindersPermissionsAsync();
+      if (Platform.OS === "ios") {
+        console.log("Requesting reminders permissions...");
+        const { status: reminderPermission } =
+          await Calendar.requestRemindersPermissionsAsync();
         remindersStatus = reminderPermission;
+        console.log("Reminders permission status:", reminderPermission);
       }
-  
+
+      // If either permission is denied, just return
+      // The system will automatically show the purpose strings from Info.plist
+      // during the permission requests above
       if (calendarStatus !== "granted" || remindersStatus !== "granted") {
-        alert("Both Calendar and Reminders permissions are required.");
+        console.log("Permissions not granted, returning early");
         return;
       }
-  
+
       const calendars = await Calendar.getCalendarsAsync();
       const defaultCalendar = calendars.find(
         (cal) => cal.isPrimary || cal.allowsModifications
       );
-  
+
       if (!defaultCalendar) {
         alert("No suitable calendar found.");
         return;
       }
-  
+
       const startDate = eventDetails?.date?.toDate
         ? eventDetails.date.toDate()
         : new Date();
       const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1-hour duration
-  
+
       const eventDetailsForCalendar = {
         title: eventDetails.name,
         startDate,
         endDate,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Adjust to your timezone
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         location: eventDetails.location,
       };
-  
-      await Calendar.createEventAsync(defaultCalendar.id, eventDetailsForCalendar);
+
+      await Calendar.createEventAsync(
+        defaultCalendar.id,
+        eventDetailsForCalendar
+      );
       Alert.alert("Event added!", "Edit your device calendar to modify.", [
         { text: "OK", style: "default" },
       ]);
@@ -175,7 +187,6 @@ export default function EventDetails() {
       alert("Failed to add event to calendar.");
     }
   };
-  
 
   if (loading) {
     return (
@@ -192,8 +203,6 @@ export default function EventDetails() {
       </View>
     );
   }
-
- 
 
   return (
     <SafeAreaView style={styles.container}>
@@ -226,35 +235,36 @@ export default function EventDetails() {
           </Text>
 
           {user ? (
-  <>
-    <TouchableOpacity
-      style={[styles.button, hasSignedUp && styles.buttonDisabled]}
-      activeOpacity={0.7}
-      onPress={eventSignUpNav}
-      disabled={hasSignedUp}
-    >
-      <Text style={styles.buttonText}>
-        {hasSignedUp ? "You've signed up!" : "Sign up"}
-      </Text>
-    </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={[styles.button, hasSignedUp && styles.buttonDisabled]}
+                activeOpacity={0.7}
+                onPress={eventSignUpNav}
+                disabled={hasSignedUp}
+              >
+                <Text style={styles.buttonText}>
+                  {hasSignedUp ? "You've signed up!" : "Sign up"}
+                </Text>
+              </TouchableOpacity>
 
-    <TouchableOpacity
-      style={styles.button}
-      activeOpacity={0.7}
-      onPress={addEventToCalendar}
-    >
-      <Text style={styles.buttonText}>Add to calendar</Text>
-    </TouchableOpacity>
-  </>
-) : (
-  <View style={styles.inputContainer}>
-    <TouchableOpacity onPress={() => router.push("/screens/sign-in")} >
-    <Text style={styles.linkText}>
-      Sign in or sign up to use features such as event sign-ups and calendar integration!
-    </Text>
-    </TouchableOpacity>
-  </View>
-)}
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.7}
+                onPress={addEventToCalendar}
+              >
+                <Text style={styles.buttonText}>Add to calendar</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.inputContainer}>
+              <TouchableOpacity onPress={() => router.push("/screens/sign-in")}>
+                <Text style={styles.linkText}>
+                  Sign in or sign up to use features such as event sign-ups and
+                  calendar integration!
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -272,7 +282,6 @@ const styles = StyleSheet.create({
     top: Platform.OS === "android" ? 20 : StatusBar.currentHeight || 40, // Adjust based on platform
     left: 20,
     zIndex: 10, // Ensure the back button stays above other elements
-  
   },
   eventDetails: {
     flex: 1,
@@ -284,7 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "outfit-bold",
     marginBottom: 10,
-    marginTop:20,
+    marginTop: 20,
   },
   eventCategory: {
     fontSize: 18,
@@ -344,7 +353,7 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-regular",
     textDecorationLine: "underline",
     alignItems: "center",
-    marginTop: 10
+    marginTop: 10,
   },
   inputContainer: {
     alignItems: "center",
