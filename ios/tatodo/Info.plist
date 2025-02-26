@@ -54,13 +54,13 @@
       <true/>
     </dict>
     <key>NSCalendarsFullAccessUsageDescription</key>
-    <string>Allow TAtodo to access your calendars </string>
+    <string>Tatodo needs calendar access to save events directly to your device’s calendar. This allows you to track events and receive reminders through your calendar app. </string>
     <key>NSCalendarsUsageDescription</key>
-    <string>Tatodo uses calendar access to let you save events you're interested in directly to your device's calendar, so you don't forget them.</string>
+    <string>Tatodo allows you to add events you are interested in directly to your calendar, ensuring you receive notifications and never miss an event.</string>
     <key>NSRemindersFullAccessUsageDescription</key>
-    <string>Allow TAtodo to access your reminders</string>
+    <string>Tatodo needs reminder access to help you set event reminders, ensuring you get notifications before an event starts.</string>
     <key>NSRemindersUsageDescription</key>
-    <string>Tatodo allows you to create reminders for upcoming events, so you receive timely notifications.</string>
+    <string>Tatodo enables you to create event reminders so you get notified before events start. For example, if you save a local concert, a reminder can alert you an hour before.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>nscalendar
