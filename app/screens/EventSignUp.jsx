@@ -128,16 +128,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: Platform.OS === "android" ? 50 : 0, // Add space for the status bar and header on Android
   },
   contentContainer: {
     flex: 1,
     margin: 10,
     padding: 20,
+  
   },
   headerText: {
     fontSize: 24,
     fontFamily: "outfit-bold",
     marginBottom: 10,
+    paddingTop: Platform.OS === "android" ? 70 : 20,
  
   },
   button: {
@@ -165,8 +168,8 @@ const styles = StyleSheet.create({
   },
   backArrowContainer: {
     position: "absolute",
-    top: StatusBar.currentHeight || 40, 
+    top: Platform.OS === "android" ? 20 : StatusBar.currentHeight || 40, // Adjust based on platform
     left: 20,
-    zIndex: 10, 
+    zIndex: 10, // Ensure it stays above other components
   },
 });

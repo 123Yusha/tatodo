@@ -74,7 +74,7 @@ export default function EventDetails() {
     setError(null);
 
     try {
-      const docRef = doc(db, "User Post's", id);
+      const docRef = doc(db, "UserPosts", id);
       await deleteDoc(docRef); // Delete the event
 
       // Show success alert

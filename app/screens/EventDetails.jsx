@@ -57,11 +57,11 @@ export default function EventDetails() {
               setHasSignedUp(!querySnapshot.empty); // Persisted across navigation
             }
           } else {
-            setError("Event not found.");
+            setError("Event not found! It's possible that the organiser has removed this event. Go Back.  ");
           }
         } catch (err) {
           console.error("Error fetching event details:", err);
-          setError("Error fetching event details.");
+          setError("Event not found! It's possible that the organiser has removed this event. Go Back.");
         } finally {
           setLoading(false);
         }
@@ -70,9 +70,11 @@ export default function EventDetails() {
       fetchEventDetails();
 
       return () => {
+       
         setEventDetails(null);
         setLoading(true);
         setError(null);
+        
       };
     }, [id])
   );
@@ -198,8 +200,11 @@ export default function EventDetails() {
 
   if (error) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>{error}</Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -358,5 +363,32 @@ const styles = StyleSheet.create({
   inputContainer: {
     alignItems: "center",
     margin: 10,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+  },
+  
+  errorText: {
+    fontSize: 18,
+    color: "red",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  
+  backButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  
+  backButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
