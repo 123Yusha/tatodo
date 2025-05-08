@@ -4,6 +4,14 @@ Tatodo is a community events app designed to connect local businesses, event org
 
 Please view my video demonstration of the app here: https://www.loom.com/share/e5eab9a7abe544f2b6559f050bad1a61?sid=48514bb7-25db-4677-905f-6d118baec108
 
+Tatotdo is available for download on Google Play and the App Store now!
+
+https://play.google.com/store/apps/details?id=com.yusha123.tatodo&pcampaignid=web_share
+
+https://apps.apple.com/us/app/tatodo/id6741329271
+
+
+
 ## Features
 
 - Event Listings: Businesses and organizers can post events with details like descriptions, dates, and locations.
